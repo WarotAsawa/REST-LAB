@@ -49,42 +49,98 @@ class SimplivityCluster(RestObject):
 			self.headers = {'Authorization':  'Bearer ' + self.access_token, 'Accept' : 'application/vnd.simplivity.v1+json'};
 			print("Omnistack cluster: " + self.auth_ip + " sucessfully authenicated!\n");
 
-	#Get DataStore methods
+	#Get DataStore methods, returning list of Simplivity datastores
 	def GetDatastores(self):
 		# Get host jsons
-		dsList = self.Get("datastores?show_optional_fields=true");
+		dsList = self.Get("datastores", {"show_optional_fields":"true"});
 		# Return if null 
 		if dsList == {}:
 			return;
+		return dsList['datastores'];
+
+	#Print all DataStores' detail.
+	def PrintDatastores(self):
+		dsList = self.GetDatastores();
 		#Print results
 		print("\n===========================================\n");
-		for ds in dsList['datastores']:
+		for ds in dsList:
 			printout = "";
-			printout += "Name: " + ds['name'] + "\n";			
-			printout += "Size: " + str(ds['size']) + "\n";
-			printout += "Backup Policy: " + ds['policy_name'] + "\n";
-			printout += "Deleted: " + str(ds["deleted"]) + "\n";
-			printout += "Cluster: " + ds["compute_cluster_parent_name"] + "\n";
+			printout += "Name: " + 			str(ds['name']) + "\n";			
+			printout += "Size: " + 			str(ds['size']) + "\n";
+			printout += "Backup Policy: " + str(ds['policy_name']) + "\n";
+			printout += "Deleted: " + 		str(ds["deleted"]) + "\n";
+			printout += "Cluster: " + 		str(ds["compute_cluster_parent_name"]) + "\n";
 			print(printout);
 			print("===========================================\n");
 
-	#Get hosts method
+	#Get hosts method, returning list of Simplivity hosts
 	def GetHosts(self):
 		# Get host jsons
-		hostList = self.Get("hosts?show_optional_fields=true");
+		hostList = self.Get("hosts", {"show_optional_fields":"true"});
 		# Return if null 
 		if hostList == {}:
 			return;
+		return hostList["hosts"];
+
+	#Print all hosts' detail.
+	def PrintHosts(self):
+		hostList = self.GetHosts();
 		#Print results
 		print("\n===========================================\n");
-		for host in hostList['hosts']:
+		for host in hostList:
 			printout = "";
-			printout += "Name: " + host['name'] + "\n";			
-			printout += "Model: " + host['model'] + "\n";
-			printout += "Management IP: " + host['management_ip'] + "\n";
-			printout += "Storage IP: " + host["storage_ip"] + "\n";
-			printout += "Version: " + host["version"] + "\n";
+			printout += "Name: " + 			str(host['name']) + 			"\n";			
+			printout += "Model: " + 		str(host['model']) + 			"\n";
+			printout += "Management IP: " + str(host['management_ip']) + 	"\n";
+			printout += "Storage IP: " + 	str(host["storage_ip"]) + 		"\n";
+			printout += "Version: " + 		str(host["version"]) + 			"\n";
 			print(printout);
 			print("===========================================\n");
+
+	#Get backups method
+	def GetBackUps(self):
+		# Get host jsons
+		backupList = self.Get("backups");
+		# Return if null 
+		if backupList == {}:
+			return;
+		return backupList['backups'];
+
+	#Print backups method
+	def PrintBackUps(self):
+		backupList = self.GetBackUps();
+		#Print results
+		print("\n===========================================\n");
+		for backup in backupList:
+			printout = "";
+			printout += "Name: " + 	str(backup['name']) + "\n";			
+			printout += "Type: " + 	str(backup['type']) + "\n";
+			printout += "Size: " + 	str(backup['size']) + "\n";
+			printout += "Sent: " + 	str(backup["sent"]) + "\n";
+			printout += "State: " + str(backup["state"]) + "\n";
+			print(printout);
+			print("===========================================\n");
+
+	#Summary of all Backup's States
+	def BackupStateSummary(self):
+		backupList = self.GetBackUps();
+		resultList = {};
+		outputText = "\nBackup summary of OmniStack Cluster " + self.auth_ip + " is : \n";
+
+		#Check every Backup state and add counts
+		for backup in backupList:
+			if (backup['state'] in resultList):
+				print(resultList[backup['state']])
+				resultList[backup['state']] += 1;
+			else:
+				resultList[backup['state']] = 0;
+
+		#Print all State results
+		for result in resultList:
+			outputText += result + " : " + str(resultList[result]) + "\n";
+
+		outputText += "\n";
+
+		print(outputText);
 
 	

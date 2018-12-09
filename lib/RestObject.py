@@ -29,11 +29,11 @@ class RestObject:
 	def Initialize(self):
 		return;
 
-	# REST Object GET methods
-	def Get(self,input):
+	# REST Object GET methods with parameters
+	def Get(self,input,parameter={}):
 		#LOGIN check
 		try:
-			output = requests.get(self.url+input, verify=False, headers=self.headers)
+			output = requests.get(self.url+input, verify=False, headers=self.headers, params = parameter);
 		except:
 			print("\nFailed to authenticated with ERROR :");
 			print(self.object_label + ": " + self.auth_ip + " is not reachable!\n");
