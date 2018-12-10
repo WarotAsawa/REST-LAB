@@ -10,13 +10,11 @@ import request;
 class SimplivityCluster(RestObject):
 
   	def __init__(self, ip, user, password):
-		self.auth_ip = ip;
-		self.auth_username = user;
-		self.auth_password = password;
 		self.object_label = "Simplivity Cluster";
+		super(SimplivityCluster,self).__init__(ip, user, password);
 
-	# Simplvity Omni stack authentication
 	def Initialize(self):
+		''' Simplvity Omni stack authentication'''
 
 		#Set Simplivity REST API URL
 		self.url = "https://" + self.auth_ip + "/api/";
@@ -50,8 +48,8 @@ class SimplivityCluster(RestObject):
 			self.headers = {'Authorization':  'Bearer ' + self.access_token, 'Accept' : 'application/vnd.simplivity.v1+json'};
 			print("Omnistack cluster: " + self.auth_ip + " sucessfully authenicated!\n");
 
-	#Get DataStore methods, returning list of Simplivity datastores
 	def GetDatastores(self):
+		'''Get DataStore methods, returning list of Simplivity datastores'''
 		# Get host jsons
 		dsList = self.Get("datastores", {"show_optional_fields":"true"});
 		# Return if null 
@@ -59,11 +57,13 @@ class SimplivityCluster(RestObject):
 			return {};
 		return dsList['datastores'];
 
-	#Print all DataStores' detail.
 	def PrintDatastores(self):
+		'''Print all DataStores' detail.'''
+
 		dsList = self.GetDatastores();
 		if dsList == {}:
 			return;
+
 		#Print results
 		print("\n===========================================\n");
 		for ds in dsList:
@@ -76,8 +76,9 @@ class SimplivityCluster(RestObject):
 			print(printout);
 			print("===========================================\n");
 
-	#Get hosts method, returning list of Simplivity hosts
 	def GetHosts(self):
+		'''Get hosts method, returning list of Simplivity hosts'''
+
 		# Get host jsons
 		hostList = self.Get("hosts", {"show_optional_fields":"true"});
 		# Return if null 
@@ -85,8 +86,9 @@ class SimplivityCluster(RestObject):
 			return {};
 		return hostList["hosts"];
 
-	#Print all hosts' detail.
 	def PrintHosts(self):
+		'''Print all hosts' detail.'''
+
 		hostList = self.GetHosts();
 		if hostList == {}:
 			return;
@@ -102,8 +104,9 @@ class SimplivityCluster(RestObject):
 			print(printout);
 			print("===========================================\n");
 
-	#Get backups method
+
 	def GetBackUps(self):
+		'''Get backups method'''
 		# Get host jsons
 		backupList = self.Get("backups");
 		# Return if null 
@@ -111,8 +114,8 @@ class SimplivityCluster(RestObject):
 			return {};
 		return backupList['backups'];
 
-	#Print backups method
 	def PrintBackUps(self):
+		'''Print backups method'''
 		backupList = self.GetBackUps();
 		if backupList == {}:
 			return;
@@ -128,11 +131,12 @@ class SimplivityCluster(RestObject):
 			print(printout);
 			print("===========================================\n");
 
-	#Summary of all Backup's States
 	def BackupStateSummary(self):
+		'''Summary of all Backup's States'''
 		backupList = self.GetBackUps();
 		if backupList == {}:
 			return;
+
 		resultList = {};
 		outputText = "\nBackup summary of OmniStack Cluster " + self.auth_ip + " is : \n";
 

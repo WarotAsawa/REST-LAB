@@ -12,9 +12,9 @@ from SimplivityCluster import SimplivityCluster;
 
 time = Time.GetInstance();
 print (time.GetTimeNow());
-print (time.GetPreviuosNDay(5));
-print (time.GetPreviuosNMonth(2));
-print (time.GetPreviuosNYear(1));
+print (time.GetPreviousNDay(5));
+print (time.GetPreviousNMonth(2));
+print (time.GetPreviousNYear(1));
 
 simpClust = SimplivityCluster("172.30.1.31", "administrator@vsphere.local", "P@ssw0rd");
 simpClust.Initialize();

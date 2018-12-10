@@ -27,21 +27,21 @@ class Time:
         return now;
 
     #Get time of previous N days in UTC format
-    def GetPreviuosNDay(self, n):
+    def GetPreviousNDay(self, n):
         now = datetime.datetime.utcnow();
         offset = datetime.timedelta(days=n);
-        return now + offset;
+        return now - offset;
 
     #Get time of previous N months in UTC format
-    def GetPreviuosNMonth(self, n):
+    def GetPreviousNMonth(self, n):
         now = datetime.datetime.utcnow();
         offset = datetime.timedelta(days=n*30);
-        return now + offset;
+        return now - offset;
 
     #Get time of previous N years in UTC format
-    def GetPreviuosNYear(self, n):
+    def GetPreviousNYear(self, n):
         now = datetime.datetime.utcnow();
         offset = datetime.timedelta(days=n*365);
-        return now + offset;
+        return now - offset;
 
 
