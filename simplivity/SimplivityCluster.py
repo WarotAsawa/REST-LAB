@@ -1,9 +1,10 @@
 #Import sections
 import sys;
+import os.path;
 #Change sys.path directory
-sys.path.insert(0, "../lib");
+sys.path.insert(0, os.path.abspath(os.path.join(os.pardir,"lib")));
 from RestObject import RestObject;
-import requests;
+import request;
 
 #Begin class
 class SimplivityCluster(RestObject):
@@ -22,7 +23,7 @@ class SimplivityCluster(RestObject):
 		
 		#LOGIN check
 		try:
-			output = requests.post(self.url+'oauth/token', auth=('simplivity', ''), verify=False, data={'grant_type':'password','username':self.auth_username,'password':self.auth_password});
+			output = request.post(self.url+'oauth/token', auth=('simplivity', ''), verify=False, data={'grant_type':'password','username':self.auth_username,'password':self.auth_password});
 		except:
 			print("\nFailed to authenticated with ERROR :");
 			print("Omnistack controller: " + self.auth_ip + " is not reachable!\n");
@@ -55,12 +56,14 @@ class SimplivityCluster(RestObject):
 		dsList = self.Get("datastores", {"show_optional_fields":"true"});
 		# Return if null 
 		if dsList == {}:
-			return;
+			return {};
 		return dsList['datastores'];
 
 	#Print all DataStores' detail.
 	def PrintDatastores(self):
 		dsList = self.GetDatastores();
+		if dsList == {}:
+			return;
 		#Print results
 		print("\n===========================================\n");
 		for ds in dsList:
@@ -79,12 +82,14 @@ class SimplivityCluster(RestObject):
 		hostList = self.Get("hosts", {"show_optional_fields":"true"});
 		# Return if null 
 		if hostList == {}:
-			return;
+			return {};
 		return hostList["hosts"];
 
 	#Print all hosts' detail.
 	def PrintHosts(self):
 		hostList = self.GetHosts();
+		if hostList == {}:
+			return;
 		#Print results
 		print("\n===========================================\n");
 		for host in hostList:
@@ -103,12 +108,14 @@ class SimplivityCluster(RestObject):
 		backupList = self.Get("backups");
 		# Return if null 
 		if backupList == {}:
-			return;
+			return {};
 		return backupList['backups'];
 
 	#Print backups method
 	def PrintBackUps(self):
 		backupList = self.GetBackUps();
+		if backupList == {}:
+			return;
 		#Print results
 		print("\n===========================================\n");
 		for backup in backupList:
@@ -124,6 +131,8 @@ class SimplivityCluster(RestObject):
 	#Summary of all Backup's States
 	def BackupStateSummary(self):
 		backupList = self.GetBackUps();
+		if backupList == {}:
+			return;
 		resultList = {};
 		outputText = "\nBackup summary of OmniStack Cluster " + self.auth_ip + " is : \n";
 

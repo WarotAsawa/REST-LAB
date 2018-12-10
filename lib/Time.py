@@ -44,8 +44,4 @@ class Time:
         offset = datetime.timedelta(days=n*365);
         return now + offset;
 
-time = Time.GetInstance();
-print (time.GetTimeNow());
-print (time.GetPreviuosNDay(5));
-print (time.GetPreviuosNMonth(2));
-print (time.GetPreviuosNYear(1));
+

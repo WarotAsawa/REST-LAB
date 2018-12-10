@@ -1,8 +1,10 @@
 #Import sections
 import sys;
+import os.path;
 #Change sys.path directory
-sys.path.insert(0, "../lib");
-import requests;
+sys.path.insert(0, os.path.abspath(os.path.join(os.pardir,"lib")));
+print(sys.path[0])
+import request;
 
 #Begin class
 class RestObject:
@@ -33,7 +35,7 @@ class RestObject:
 	def Get(self,input,parameter={}):
 		#LOGIN check
 		try:
-			output = requests.get(self.url+input, verify=False, headers=self.headers, params = parameter);
+			output = request.get(self.url+input, verify=False, headers=self.headers, params = parameter);
 		except:
 			print("\nFailed to authenticated with ERROR :");
 			print(self.object_label + ": " + self.auth_ip + " is not reachable!\n");
