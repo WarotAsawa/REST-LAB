@@ -1,10 +1,13 @@
+#---------------------------------------------------------------------
 #Import sections
 import sys;
 import os.path;
 #Change sys.path directory
 sys.path.insert(0, os.path.abspath(os.path.join(os.pardir,"lib")));
+from Time import Time;
 from RestObject import RestObject;
-import request;
+import requests;
+#---------------------------------------------------------------------
 
 #Begin class
 class SimplivityCluster(RestObject):
@@ -19,25 +22,11 @@ class SimplivityCluster(RestObject):
 		#Set Simplivity REST API URL
 		self.url = "https://" + self.auth_ip + "/api/";
 		
-		#LOGIN check
-		try:
-			output = request.post(self.url+'oauth/token', auth=('simplivity', ''), verify=False, data={'grant_type':'password','username':self.auth_username,'password':self.auth_password});
-		except:
-			print("\nFailed to authenticated with ERROR :");
-			print("Omnistack controller: " + self.auth_ip + " is not reachable!\n");
-			return;
-
-		#Check if valid Omnistack controller 
-		try:
-			response = output.json();
-		#and Convert Output to Response
-		except:
-			print("\nFailed to authenticated with ERROR :");
-			print("Omnistack controller: " + self.auth_ip + " is not a valid controller!\n");
-			return;
+		#LOGIN check and Get Response
+		response = self.Post(self.url+'oauth/token', ('simplivity', ''), False, {'grant_type':'password','username':self.auth_username,'password':self.auth_password});
 		
 		#Check if error
-		if "error" in response:
+		if ("error" in response) or (response == {}):
 			print("\nFailed to authenticated with ERROR :");
 			print(response["message"]);
 			print("\n");
@@ -46,9 +35,9 @@ class SimplivityCluster(RestObject):
 		if "access_token" in response:
 			self.access_token = response["access_token"];
 			self.headers = {'Authorization':  'Bearer ' + self.access_token, 'Accept' : 'application/vnd.simplivity.v1+json'};
-			print("Omnistack cluster: " + self.auth_ip + " sucessfully authenicated!\n");
+			print("\nOmnistack cluster: " + self.auth_ip + " sucessfully authenicated!\n");
 
-	def GetDatastores(self):
+	def GetDatastoresAll(self):
 		'''Get DataStore methods, returning list of Simplivity datastores'''
 		# Get host jsons
 		dsList = self.Get("datastores", {"show_optional_fields":"true"});
@@ -57,10 +46,10 @@ class SimplivityCluster(RestObject):
 			return {};
 		return dsList['datastores'];
 
-	def PrintDatastores(self):
+	def PrintDatastoresAll(self):
 		'''Print all DataStores' detail.'''
 
-		dsList = self.GetDatastores();
+		dsList = self.GetDatastoresAll();
 		if dsList == {}:
 			return;
 
@@ -76,7 +65,7 @@ class SimplivityCluster(RestObject):
 			print(printout);
 			print("===========================================\n");
 
-	def GetHosts(self):
+	def GetHostsAll(self):
 		'''Get hosts method, returning list of Simplivity hosts'''
 
 		# Get host jsons
@@ -86,10 +75,10 @@ class SimplivityCluster(RestObject):
 			return {};
 		return hostList["hosts"];
 
-	def PrintHosts(self):
+	def PrintHostsAll(self):
 		'''Print all hosts' detail.'''
 
-		hostList = self.GetHosts();
+		hostList = self.GetHostsAll();
 		if hostList == {}:
 			return;
 		#Print results
@@ -104,8 +93,7 @@ class SimplivityCluster(RestObject):
 			print(printout);
 			print("===========================================\n");
 
-
-	def GetBackUps(self):
+	def GetBackUpsAll(self):
 		'''Get backups method'''
 		# Get host jsons
 		backupList = self.Get("backups");
@@ -114,9 +102,9 @@ class SimplivityCluster(RestObject):
 			return {};
 		return backupList['backups'];
 
-	def PrintBackUps(self):
+	def PrintBackUpsAll(self):
 		'''Print backups method'''
-		backupList = self.GetBackUps();
+		backupList = self.GetBackUpsAll();
 		if backupList == {}:
 			return;
 		#Print results
@@ -128,12 +116,13 @@ class SimplivityCluster(RestObject):
 			printout += "Size: " + 	str(backup['size']) + "\n";
 			printout += "Sent: " + 	str(backup["sent"]) + "\n";
 			printout += "State: " + str(backup["state"]) + "\n";
+			printout += "Created At: " + str(backup["created_at"]) + "\n";
 			print(printout);
 			print("===========================================\n");
 
-	def BackupStateSummary(self):
+	def BackUpsSummaryAll(self):
 		'''Summary of all Backup's States'''
-		backupList = self.GetBackUps();
+		backupList = self.GetBackUpsAll();
 		if backupList == {}:
 			return;
 
@@ -143,7 +132,6 @@ class SimplivityCluster(RestObject):
 		#Check every Backup state and add counts
 		for backup in backupList:
 			if (backup['state'] in resultList):
-				print(resultList[backup['state']])
 				resultList[backup['state']] += 1;
 			else:
 				resultList[backup['state']] = 0;
@@ -156,4 +144,35 @@ class SimplivityCluster(RestObject):
 
 		print(outputText);
 
-	
+	def GetBackUpsFrom(self, time):
+		'''Get backups method'''
+		# Get host jsons
+		backupList = self.Get("backups",{'created_after':Time.GetInstance().UTCToISO(time)});
+		# Return if null 
+		if backupList == {}:
+			return {};
+		return backupList['backups'];
+
+	def BackUpsSummaryFrom(self,time):
+		'''Summary of all Backup's States'''
+		backupList = self.GetBackUpsFrom(time);
+		if backupList == {}:
+			return;
+
+		resultList = {};
+		outputText = "\nBackup summary of OmniStack Cluster " + self.auth_ip + " from : " + str(time) + " is : \n";
+
+		#Check every Backup state and add counts
+		for backup in backupList:
+			if (backup['state'] in resultList):
+				resultList[backup['state']] += 1;
+			else:
+				resultList[backup['state']] = 0;
+
+		#Print all State results
+		for result in resultList:
+			outputText += result + " : " + str(resultList[result]) + "\n";
+
+		outputText += "\n";
+
+		print(outputText);
