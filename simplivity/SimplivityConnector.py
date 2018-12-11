@@ -18,6 +18,6 @@ simpClust = SimplivityCluster("172.30.1.31", "administrator@vsphere.local", "P@s
 simpClust.Initialize();
 
 simpClust.BackUpsSummaryAll();
-simpClust.BackUpsSummaryFrom(time.GetPreviousNDay(1));
+simpClust.BackUpsSummaryFrom(time.GetPreviousNDay(2));
 
 simpClust.PrintHostsAll();

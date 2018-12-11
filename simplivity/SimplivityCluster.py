@@ -85,13 +85,14 @@ class SimplivityCluster(RestObject):
 		print("\n===========================================\n");
 		for host in hostList:
 			printout = "";
-			printout += "Name: " + 			str(host['name']) + 			"\n";			
+			printout += "Name: " + 			str(host['name']) + 			"\n";	
+			printout += "Status: " + 		str(host['state']) + 			"\n";			
 			printout += "Model: " + 		str(host['model']) + 			"\n";
 			printout += "Management IP: " + str(host['management_ip']) + 	"\n";
 			printout += "Storage IP: " + 	str(host["storage_ip"]) + 		"\n";
 			printout += "Version: " + 		str(host["version"]) + 			"\n";
-			#printout += "Capacity: " + 		str(host["allocated_capacity"]/pow(1024.0,4)) + 	" TiB\n";
-			#printout += "Used Capacity: " + str(host["used_capacity"]/pow(1024.0,4)) + 	" TiB\n";
+			printout += "Capacity: " + 		str(host["allocated_capacity"]/pow(1024.0,4)) + 	" TiB\n";
+			printout += "Used Capacity: " + str(host["used_capacity"]/pow(1024.0,4)) + 	" TiB\n";
 			print(printout);
 			print("===========================================\n");
 
