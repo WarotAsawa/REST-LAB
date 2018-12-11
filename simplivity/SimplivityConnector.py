@@ -20,3 +20,4 @@ simpClust.Initialize();
 simpClust.BackUpsSummaryAll();
 simpClust.BackUpsSummaryFrom(time.GetPreviousNDay(1));
 
+simpClust.PrintHostsAll();

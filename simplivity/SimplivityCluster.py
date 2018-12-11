@@ -90,6 +90,8 @@ class SimplivityCluster(RestObject):
 			printout += "Management IP: " + str(host['management_ip']) + 	"\n";
 			printout += "Storage IP: " + 	str(host["storage_ip"]) + 		"\n";
 			printout += "Version: " + 		str(host["version"]) + 			"\n";
+			#printout += "Capacity: " + 		str(host["allocated_capacity"]/pow(1024.0,4)) + 	" TiB\n";
+			#printout += "Used Capacity: " + str(host["used_capacity"]/pow(1024.0,4)) + 	" TiB\n";
 			print(printout);
 			print("===========================================\n");
 
