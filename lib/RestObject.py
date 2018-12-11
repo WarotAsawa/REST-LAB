@@ -68,12 +68,15 @@ class RestObject(object):
 		# Return response JSON
 		return response;
 
-	def Post(self, url="", auth=(), verify=False, data={}):
+	def Post(self, url="", auth=None, verify=False, data={}, header=None):
 		'''REST Object PUT : Included ERROR check and handling.'''
 
 		#LOGIN check
 		try:
-			output = requests.post(url, auth=auth, verify=verify, data=data);
+			if (header == None):
+				output = requests.post(url, auth=auth, verify=verify, data=data);
+			else:
+				output = requests.post(url , verify=verify, data=data, headers=header);
 		except:
 			print("\nFailed to authenticated with ERROR :");
 			print(self.object_label + " : " + self.auth_ip + " is not reachable!\n");

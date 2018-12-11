@@ -177,5 +177,26 @@ class SimplivityCluster(RestObject):
 			outputText += result + " : " + str(resultList[result]) + "\n";
 
 		outputText += "\n";
-
 		print(outputText);
+
+	def CloneVM(self,old_vm_name ,new_vm_name):
+		''' Clone existing VM to new VM '''
+		vmList = self.Get("virtual_machines", {"name": old_vm_name});
+		if (vmList == {}):
+			#Print error if there is no VM
+			print ("\nCannot fint VM named " + old_vm_name + " in Simplivity " + self.auth_ip);
+		vm = vmList["virtual_machines"][0];
+		#Set URL for POST
+		cloneUrl = "virtual_machines/" + vm["id"] + "/clone";
+		#Set Cloning parameters
+		payload = {"virtual_machine_name":new_vm_name};
+		#Issue Clone VM
+		result = self.Post(self.url + cloneUrl,None, False, payload,self.headers);
+
+		if result == {}:
+			print("\nFAILED to Clone VM " + old_vm_name + " to " + new_vm_name);
+		else:
+			print(result);
+			print("\nSUCCESS to Clone VM " + old_vm_name + " to " + new_vm_name);
+
+
