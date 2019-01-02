@@ -23,7 +23,7 @@ class SimplivityCluster(RestObject):
 		self.url = "https://" + self.auth_ip + "/api/";
 		
 		#LOGIN check and Get Response
-		response = self.Post(self.url+'oauth/token', ('simplivity', ''), False, {'grant_type':'password','username':self.auth_username,'password':self.auth_password});
+		response = self.Post('oauth/token', ('simplivity', ''), False, {'grant_type':'password','username':self.auth_username,'password':self.auth_password});
 		
 		#Check if error
 		if ("error" in response) or (response == {}):
@@ -189,9 +189,11 @@ class SimplivityCluster(RestObject):
 		#Set URL for POST
 		cloneUrl = "virtual_machines/" + vm["id"] + "/clone";
 		#Set Cloning parameters
-		payload = {"virtual_machine_name":new_vm_name};
+		payload = '{"virtual_machine_name":"' + new_vm_name + '"}';
+		print(payload);
+		print(self.url + cloneUrl)
 		#Issue Clone VM
-		result = self.Post(self.url + cloneUrl,None, False, payload,self.headers);
+		result = self.Post(cloneUrl,None, False, payload,self.headers);
 
 		if result == {}:
 			print("\nFAILED to Clone VM " + old_vm_name + " to " + new_vm_name);

@@ -74,9 +74,10 @@ class RestObject(object):
 		#LOGIN check
 		try:
 			if (header == None):
-				output = requests.post(url, auth=auth, verify=verify, data=data);
+				output = requests.post(self.url+url, auth=auth, verify=verify, data=data);
 			else:
-				output = requests.post(url , verify=verify, data=data, headers=header);
+				header['content-type'] = 'application/vnd.simplivity.v1+json';
+				output = requests.post(self.url+url , verify=verify, data=data, headers=header);
 		except:
 			print("\nFailed to authenticated with ERROR :");
 			print(self.object_label + " : " + self.auth_ip + " is not reachable!\n");

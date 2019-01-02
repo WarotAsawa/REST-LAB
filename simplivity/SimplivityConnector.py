@@ -17,5 +17,7 @@ time = Time.GetInstance();
 simpClust = SimplivityCluster("172.30.1.31", "administrator@vsphere.local", "P@ssw0rd");
 simpClust.Initialize();
 
+simpClust.PrintHostsAll();
 simpClust.BackUpsSummaryFrom(time.GetPreviousNDay(1));
-simpClust.CloneVM("vNAT_GW", "new_vNAT_GW");
+for i in range (1,10):
+	simpClust.CloneVM("vNAT_GW", "RESTCLONE-"+str(time.GetTimeNow()));
