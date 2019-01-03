@@ -19,5 +19,5 @@ simpClust.Initialize();
 
 simpClust.PrintHostsAll();
 simpClust.BackUpsSummaryFrom(time.GetPreviousNDay(1));
-for i in range (1,10):
-	simpClust.CloneVM("vNAT_GW", "RESTCLONE-"+str(time.GetTimeNow()));
+#simpClust.MoveVM("hxe-fix", "REST-API");
+simpClust.MoveVM("hxe-fix", "DC01 Datastore01");

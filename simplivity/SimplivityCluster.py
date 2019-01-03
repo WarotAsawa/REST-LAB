@@ -249,7 +249,7 @@ class SimplivityCluster(RestObject):
 		#Set Moving parameters, content type and Payloads
 		header = self.headers;
 		header['content-type'] = 'application/vnd.simplivity.v1+json';
-		payload = '{"virtual_machine_name":"' + new_vm_name + '" , "destination_datastore_id":"' + target_ds + '"}';
+		payload = '{"virtual_machine_name":"' + vm_name + '" , "destination_datastore_id":"' + str(ds["id"]) + '"}';
 		#Issue Move VM
 		result = self.Post(moveUrl,None, False, payload,self.headers);
 
