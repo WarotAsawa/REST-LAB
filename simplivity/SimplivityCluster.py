@@ -123,6 +123,34 @@ class SimplivityCluster(RestObject):
 			print(printout);
 			print("===========================================\n");
 
+	def GetVMsAll(self):
+		'''Get VMs methods, returning list of Simplivity VMs'''
+		# Get host jsons
+		dsList = self.Get("virtual_machines", {"show_optional_fields":"true"});
+		# Return if null 
+		if dsList == {}:
+			return {};
+		return dsList['virtual_machines'];
+
+	def PrintVMsAll(self):
+		'''Print all VMs' detail.'''
+
+		dsList = self.GetVMsAll();
+		if dsList == {}:
+			return;
+
+		#Print results
+		print("\n===========================================\n");
+		for ds in dsList:
+			printout = "";
+			printout += "Name: " + 			str(ds['name']) + "\n";			
+			printout += "DataStore: " + 	str(ds['datastore_name']) + "\n";
+			printout += "Backup Policy: " + str(ds['policy_name']) + "\n";
+			printout += "State: " + 		str(ds["state"]) + "\n";
+			printout += "Host: " + 			str(ds["host_id"]) + "\n";
+			print(printout);
+			print("===========================================\n");
+
 	def BackUpsSummaryAll(self):
 		'''Summary of all Backup's States'''
 		backupList = self.GetBackUpsAll();
@@ -184,14 +212,16 @@ class SimplivityCluster(RestObject):
 		vmList = self.Get("virtual_machines", {"name": old_vm_name});
 		if (vmList == {}):
 			#Print error if there is no VM
-			print ("\nCannot fint VM named " + old_vm_name + " in Simplivity " + self.auth_ip);
+			print ("\nCannot find VM named " + old_vm_name + " in Simplivity " + self.auth_ip);
+			return;
 		vm = vmList["virtual_machines"][0];
 		#Set URL for POST
 		cloneUrl = "virtual_machines/" + vm["id"] + "/clone";
-		#Set Cloning parameters
+		#Set Cloning parameters, content type and Payloads
+		header = self.headers;
+		header['content-type'] = 'application/vnd.simplivity.v1+json';
 		payload = '{"virtual_machine_name":"' + new_vm_name + '"}';
-		print(payload);
-		print(self.url + cloneUrl)
+		
 		#Issue Clone VM
 		result = self.Post(cloneUrl,None, False, payload,self.headers);
 
@@ -201,4 +231,31 @@ class SimplivityCluster(RestObject):
 			print(result);
 			print("\nSUCCESS to Clone VM " + old_vm_name + " to " + new_vm_name);
 
+	def MoveVM(self,vm_name ,target_ds):
+		''' Move VM to targeted DataStore '''
+		vmList = self.Get("virtual_machines", {"name": vm_name});
+		if (vmList == {}):
+			#Print error if there is no VM
+			print ("\nCannot find VM named " + vm_name + " in Simplivity " + self.auth_ip);
+		vm = vmList["virtual_machines"][0];
+
+		dsList = self.Get("datastores", {"name": target_ds});
+		if (dsList == {}):
+			#Print error if there is no VM
+			print ("\nCannot find target DataStore named " + target_ds + " in Simplivity " + self.auth_ip);
+		ds = dsList["datastores"][0];
+		#Set URL for POST
+		moveUrl = "virtual_machines/" + vm["id"] + "/move";
+		#Set Moving parameters, content type and Payloads
+		header = self.headers;
+		header['content-type'] = 'application/vnd.simplivity.v1+json';
+		payload = '{"virtual_machine_name":"' + new_vm_name + '" , "destination_datastore_id":"' + target_ds + '"}';
+		#Issue Move VM
+		result = self.Post(moveUrl,None, False, payload,self.headers);
+
+		if result == {}:
+			print("\nFAILED to Move VM " + vm_name + " to Datastore " + target_ds);
+		else:
+			print(result);
+			print("\nSUCCESS to Clone VM " + vm_name + " to Datastore " + target_ds);
 

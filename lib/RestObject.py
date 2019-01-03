@@ -60,7 +60,7 @@ class RestObject(object):
 		
 		# Check if error
 		if ("error_code" in response) or ("error" in response):
-			print("\nFaile to authenticated with ERROR :");
+			print("\nFailed to GET with ERROR :");
 			print(response["error"]);
 			print("\n");
 			return {};
@@ -76,7 +76,6 @@ class RestObject(object):
 			if (header == None):
 				output = requests.post(self.url+url, auth=auth, verify=verify, data=data);
 			else:
-				header['content-type'] = 'application/vnd.simplivity.v1+json';
 				output = requests.post(self.url+url , verify=verify, data=data, headers=header);
 		except:
 			print("\nFailed to authenticated with ERROR :");
@@ -91,5 +90,13 @@ class RestObject(object):
 			print("\nFailed to authenticated with ERROR :");
 			print(self.object_label + " : " + self.auth_ip + " is not a valid " + self.object_label + "!\n");
 			return {};
-		
+
+		# Check if error
+		if ("error_code" in response) or ("error" in response):
+			print("\nFailed to Post with ERROR :");
+			print(response["error"]);
+			print("\n");
+			return {};
+
+		# Return response JSON
 		return response;
