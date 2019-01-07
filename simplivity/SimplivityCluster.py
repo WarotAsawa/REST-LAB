@@ -28,7 +28,7 @@ class SimplivityCluster(RestObject):
 		#Check if error
 		if ("error" in response) or (response == {}):
 			print("\nFailed to authenticated with ERROR :");
-			print(response["message"]);
+			print(response["error"]);
 			print("\n");
 
 		#Get Access Token

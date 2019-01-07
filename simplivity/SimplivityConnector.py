@@ -19,5 +19,5 @@ simpClust.Initialize();
 
 simpClust.PrintHostsAll();
 simpClust.BackUpsSummaryFrom(time.GetPreviousNDay(1));
-#simpClust.MoveVM("hxe-fix", "REST-API");
-simpClust.MoveVM("hxe-fix", "DC01 Datastore01");
+
+
