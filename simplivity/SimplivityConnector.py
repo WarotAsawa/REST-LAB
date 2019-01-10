@@ -11,13 +11,13 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.pardir,"simplivity")));
 from SimplivityCluster import SimplivityCluster;
 #---------------------------------------------------------------------
 
-
 time = Time.GetInstance();
 
-simpClust = SimplivityCluster("172.30.1.31", "administrator@vsphere.local", "P@ssw0rd");
-simpClust.Initialize();
+bblCluster = SimplivityCluster("172.30.5.31", "administrator@vsphere.local", "P@ssw0rd");
+bblCluster.Initialize();
 
-simpClust.PrintHostsAll();
-simpClust.BackUpsSummaryFrom(time.GetPreviousNDay(1));
+bblCluster.BackUpsSummaryAll();
 
+for i in range(11,15):
+	bblCluster.CloneVM("Centos", "BBL-Clone-" + str(i));
 

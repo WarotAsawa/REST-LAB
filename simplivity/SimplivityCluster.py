@@ -27,9 +27,7 @@ class SimplivityCluster(RestObject):
 		
 		#Check if error
 		if ("error" in response) or (response == {}):
-			print("\nFailed to authenticated with ERROR :");
-			print(response["error"]);
-			print("\n");
+			return;
 
 		#Get Access Token
 		if "access_token" in response:
@@ -58,7 +56,7 @@ class SimplivityCluster(RestObject):
 		for ds in dsList:
 			printout = "";
 			printout += "Name: " + 			str(ds['name']) + "\n";			
-			printout += "Size: " + 			str(ds['size']) + "\n";
+			printout += "Size: " + 			str(ds['size']/1024/1024/1024/1024) + " TiB\n";
 			printout += "Backup Policy: " + str(ds['policy_name']) + "\n";
 			printout += "Deleted: " + 		str(ds["deleted"]) + "\n";
 			printout += "Cluster: " + 		str(ds["compute_cluster_parent_name"]) + "\n";
@@ -91,8 +89,8 @@ class SimplivityCluster(RestObject):
 			printout += "Management IP: " + str(host['management_ip']) + 	"\n";
 			printout += "Storage IP: " + 	str(host["storage_ip"]) + 		"\n";
 			printout += "Version: " + 		str(host["version"]) + 			"\n";
-			printout += "Capacity: " + 		str(host["allocated_capacity"]/pow(1024.0,4)) + 	" TiB\n";
-			printout += "Used Capacity: " + str(host["used_capacity"]/pow(1024.0,4)) + 	" TiB\n";
+			printout += "Capacity: " + 		str(float("{0:.2f}".format(host["allocated_capacity"]/pow(1024.0,4)))) + 	" TiB\n";
+			printout += "Used Capacity: " + str(float("{0:.2f}".format(host["used_capacity"]/pow(1024.0,4)))) + 	" TiB\n";
 			print(printout);
 			print("===========================================\n");
 
@@ -210,7 +208,7 @@ class SimplivityCluster(RestObject):
 	def CloneVM(self,old_vm_name ,new_vm_name):
 		''' Clone existing VM to new VM '''
 		vmList = self.Get("virtual_machines", {"name": old_vm_name});
-		if (vmList == {}):
+		if (vmList == {} or len(vmList["virtual_machines"]) == 0):
 			#Print error if there is no VM
 			print ("\nCannot find VM named " + old_vm_name + " in Simplivity " + self.auth_ip);
 			return;
@@ -228,7 +226,7 @@ class SimplivityCluster(RestObject):
 		if result == {}:
 			print("\nFAILED to Clone VM " + old_vm_name + " to " + new_vm_name);
 		else:
-			print(result);
+			#print(result);
 			print("\nSUCCESS to Clone VM " + old_vm_name + " to " + new_vm_name);
 
 	def MoveVM(self,vm_name ,target_ds):
