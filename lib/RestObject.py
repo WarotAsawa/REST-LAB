@@ -49,21 +49,8 @@ class RestObject(object):
 			print(self.object_label + ": " + self.auth_ip + " is not reachable!\n");
 			return {};
 
-		# Check if valid Omnistack controller 
-		try:
-			response = output.json();
-		# and Convert Output to Response
-		except:
-			print("\nFailed to authenticated with ERROR :");
-			print(self.object_label + ": "+ self.auth_ip + " is not a valid " + self.object_label + "\n");
-			return {};
-		
 		# Check if error
-		if ("error_code" in response) or ("error" in response):
-			print("\nFailed to GET with ERROR :");
-			print(response["error"]);
-			print("\n");
-			return {};
+		response = self.CheckOutputError(output);
 
 		# Return response JSON
 		return response;
@@ -82,6 +69,16 @@ class RestObject(object):
 			print(self.object_label + " : " + self.auth_ip + " is not reachable!\n");
 			return {};
 
+		
+		# Check if error
+		response = self.CheckOutputError(output);
+
+		# Return response JSON
+		return response;
+
+	def CheckOutputError(self, output):
+		#Check response error and return True or False;
+
 		#Check if valid Omnistack controller 
 		try:
 			response = output.json();
@@ -91,12 +88,22 @@ class RestObject(object):
 			print(self.object_label + " : " + self.auth_ip + " is not a valid " + self.object_label + "!\n");
 			return {};
 
-		# Check if error
-		if ("error_code" in response) or ("error" in response):
-			print("\nFailed to Post with ERROR :");
+		if ("error_code" in response):
+			print("\nFailed with ERROR :");
+			print(response["error_code"]);
+			print("\n");
+			return {};
+
+		if ("error" in response):
+			print("\nFailed with ERROR :");
 			print(response["error"]);
 			print("\n");
 			return {};
 
-		# Return response JSON
+		if (response == {}):
+			print("\nFailed to get output from :");
+			print(self.object_label + " : " + self.auth_ip + "\n");
+			return {};
+
 		return response;
+			
