@@ -91,6 +91,10 @@ class SimplivityCluster(RestObject):
 			printout += "Version: " + 		str(host["version"]) + 			"\n";
 			printout += "Capacity: " + 		str(float("{0:.2f}".format(host["allocated_capacity"]/pow(1024.0,4)))) + 	" TiB\n";
 			printout += "Used Capacity: " + str(float("{0:.2f}".format(host["used_capacity"]/pow(1024.0,4)))) + 	" TiB\n";
+			printout += "Used Logical Capacity: " + 		str(float("{0:.2f}".format(host["used_logical_capacity"]/pow(1024.0,4)))) + 	" TiB\n";
+			printout += "Local Backup Capacity: " + 		str(float("{0:.2f}".format(host["local_backup_capacity"]/pow(1024.0,4)))) + 	" TiB\n";
+			printout += "Remote Backup Capacity: " + 		str(float("{0:.2f}".format(host["remote_backup_capacity"]/pow(1024.0,4)))) + 	" TiB\n";
+			printout += "Local VM Capacity: " + 		str(float("{0:.2f}".format(host["stored_virtual_machine_data"]/pow(1024.0,4)))) + 	" TiB\n";
 			print(printout);
 			print("===========================================\n");
 
@@ -114,7 +118,8 @@ class SimplivityCluster(RestObject):
 			printout = "";
 			printout += "Name: " + 	str(backup['name']) + "\n";			
 			printout += "Type: " + 	str(backup['type']) + "\n";
-			printout += "Size: " + 	str(backup['size']) + "\n";
+			printout += "Size: " + 	str(float("{0:.2f}".format(backup['size']/pow(1024.0,4)))) + " TiB\n";
+			printout += "Unique Size: " + 	str(float("{0:.3f}".format(backup['unique_size_bytes']/pow(1024.0,3)))) + " GiB\n";
 			printout += "Sent: " + 	str(backup["sent"]) + "\n";
 			printout += "State: " + str(backup["state"]) + "\n";
 			printout += "Created At: " + str(backup["created_at"]) + "\n";

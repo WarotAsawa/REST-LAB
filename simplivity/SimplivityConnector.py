@@ -9,15 +9,21 @@ import os.path;
 #Change sys.path directory
 sys.path.insert(0, os.path.abspath(os.path.join(os.pardir,"simplivity")));
 from SimplivityCluster import SimplivityCluster;
+#sys.path.insert(0, os.path.abspath(os.path.join(os.pardir,"nimble")));
+#from NimbleArray import NimbleArray;
 #---------------------------------------------------------------------
-
+#
 time = Time.GetInstance();
 
-bblCluster = SimplivityCluster("172.30.5.31", "administrator@vsphere.local", "P@ssw0rd");
-bblCluster.Initialize();
+llCluster = SimplivityCluster("172.30.5.31", "administrator@vsphere.local", "P@ssw0rd");
+llCluster.Initialize();
 
-bblCluster.BackUpsSummaryAll();
+llCluster.BackUpsSummaryAll();
 
-for i in range(11,15):
-	bblCluster.CloneVM("Centos", "BBL-Clone-" + str(i));
+llCluster.PrintHostsAll();
 
+llCluster.PrintBackUpsAll();
+#nimbleDC = NimbleArray("172.30.4.20","admin","admin","../nimble/cert/nimble-dc.cer");
+#nimbleDC.Initialize();
+#print(nimbleDC.name)
+#nimbleDC.PrintNimbleCapacity();
