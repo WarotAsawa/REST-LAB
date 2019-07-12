@@ -56,7 +56,7 @@ def GetPhysicalData():
 
     return outputList;
 
-external_stylesheets = ['./myStyle.css']
+external_stylesheets = ['./myStyle.css'];
     #{'x': [1, 2, 3], 'y': [4, 1, 2], 'type': 'bar', 'name': 'SF'},
 
 data = GetHostsCapacityData();
@@ -66,32 +66,47 @@ vmTrace = go.Bar(
     y = data['name'],
     x = data['vmData'],
     name = 'VM Data (TiB)',
-    orientation = 'h'
+    orientation = 'h',
+    marker = dict(
+        color = 'rgb(91,71,103)'
+        )
     );
 localBackupTrace = go.Bar(
     y = data['name'],
     x = data['localBackup'],
     name = 'Local Backup (TiB)',
-    orientation = 'h'
+    orientation = 'h',
+    marker = dict(
+        color = 'rgb(255,141,109)'
+        )
     );
 remoteBackupTrace = go.Bar(
     y = data['name'],
     x = data['remoteBackup'],
     name = 'Remote Backup (TiB)',
-    orientation = 'h'
+    orientation = 'h',
+    marker = dict(
+        color = 'rgb(128,130,133)'
+        )
     );
 
 usedTrace = go.Bar(
     y = physData['name'],
     x = physData['usedCap'],
     name = 'Used Capacity (TiB)',
-    orientation = 'h'
+    orientation = 'h',
+    marker = dict(
+        color = 'rgb(0,177,136)'
+        )
     );
 leftTrace = go.Bar(
     y = physData['name'],
     x = physData['leftCap'],
     name = 'Free Capacity (TiB)',
-    orientation = 'h'
+    orientation = 'h',
+    marker = dict(
+        color = 'rgb(200,200,200)'
+        )
     );
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
