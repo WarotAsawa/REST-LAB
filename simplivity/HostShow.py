@@ -110,30 +110,39 @@ leftTrace = go.Bar(
     );
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
-
+layout = go.Layout(
+    autosize = True,
+    width = 500,
+    height = 200
+    );
 logicalFig = go.Figure(data=[vmTrace,localBackupTrace,remoteBackupTrace], layout = go.Layout(barmode="stack"));
 physicalFig = go.Figure(data=[usedTrace,leftTrace], layout = go.Layout(barmode="stack"));
 
 app.layout = html.Div(children=[
     html.H1(children='Simplivity Capacity Usage'),
-
-    html.Div(children='''
-        Logical Usage: Sperated by data type (TiB).
-    '''),    
-    dcc.Graph(
-        id='Host logical capacity (TiB)',
-        figure = logicalFig
-        
-    ),
-
-    html.Div(children='''
-        Physical Usage: Sperated by node physical usage (TiB).
-    '''),    
-    dcc.Graph(
-        id='Host physical capacity (TiB)',
-        figure= physicalFig
-        )
     
+    html.Div(style = {'float':'left','width':'50%','height':'300px'}, children=[
+        html.Div(children='''
+         Logical Usage: Sperated by data type (TiB).
+        '''),    
+    
+        dcc.Graph(
+            id='Host logical capacity (TiB)',
+            figure = logicalFig,
+            style = {'height':'100%'}           
+        )
+    ]),
+    html.Div(style = {'float':'left','width':'50%','height':'300px'}, children=[ 
+        html.Div(children='''
+         Physical Usage: Sperated by node physical usage (TiB).
+        '''), 
+      
+        dcc.Graph(
+            id='Host physical capacity (TiB)',
+            figure= physicalFig,
+            style = {'height':'100%'}
+            )
+    ] )
 ]);
 
 
