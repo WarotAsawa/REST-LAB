@@ -111,6 +111,9 @@ leftTrace = go.Bar(
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
+logicalFig = go.Figure(data=[vmTrace,localBackupTrace,remoteBackupTrace], layout = go.Layout(barmode="stack"));
+physicalFig = go.Figure(data=[usedTrace,leftTrace], layout = go.Layout(barmode="stack"));
+
 app.layout = html.Div(children=[
     html.H1(children='Simplivity Capacity Usage'),
 
@@ -119,9 +122,8 @@ app.layout = html.Div(children=[
     '''),    
     dcc.Graph(
         id='Host logical capacity (TiB)',
-        figure= go.Figure(data=[vmTrace,localBackupTrace,remoteBackupTrace],
-            layout = go.Layout(barmode="stack")
-        )
+        figure = logicalFig
+        
     ),
 
     html.Div(children='''
@@ -129,10 +131,9 @@ app.layout = html.Div(children=[
     '''),    
     dcc.Graph(
         id='Host physical capacity (TiB)',
-        figure= go.Figure(data=[usedTrace,leftTrace],
-            layout = go.Layout(barmode="stack")
+        figure= physicalFig
         )
-    )
+    
 ]);
 
 
@@ -140,3 +141,14 @@ app.layout = html.Div(children=[
 
 if __name__ == '__main__':
     app.run_server(port=8080,host='0.0.0.0')
+    while True:
+        time.sleep(5);
+        data = GetHostsCapacityData();
+        physData = GetPhysicalData();
+        logicalFig.data[0] = data['vmData'];
+        logicalFig.data[1] = data['localBackup'];
+        logicalFig.data[1] = data['localBackup'];
+
+
+
+
