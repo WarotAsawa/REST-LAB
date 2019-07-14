@@ -5,6 +5,8 @@ import os.path;
 #Change sys.path directory
 sys.path.insert(0, os.path.abspath(os.path.join(os.pardir,"lib")));
 from Time import Time;
+from datetime import datetime, timedelta
+
 import os.path;
 #Change sys.path directory
 sys.path.insert(0, os.path.abspath(os.path.join(os.pardir,"simplivity")));
@@ -17,12 +19,12 @@ time = Time.GetInstance();
 
 llCluster = SimplivityCluster("172.30.5.31", "administrator@vsphere.local", "P@ssw0rd");
 llCluster.Initialize();
+yesterday = datetime.now() - timedelta(days=1)
+llCluster.PrintClustersAll();
 
-llCluster.BackUpsSummaryAll();
+#llCluster.PrintHostsAll();
 
-llCluster.PrintHostsAll();
-
-llCluster.PrintBackUpsAll();
+#llCluster.PrintBackUpsAll();
 #nimbleDC = NimbleArray("172.30.4.20","admin","admin","../nimble/cert/nimble-dc.cer");
 #nimbleDC.Initialize();
 #print(nimbleDC.name)

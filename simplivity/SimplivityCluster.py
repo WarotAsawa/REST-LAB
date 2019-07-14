@@ -27,12 +27,13 @@ class SimplivityCluster(RestObject):
 		
 		#Check if error
 		if ("error" in response) or (response == {}):
-			return;
+			return "error";
 
 		#Get Access Token
 		if "access_token" in response:
 			self.access_token = response["access_token"];
 			self.headers = {'Authorization':  'Bearer ' + self.access_token, 'Accept' : 'application/vnd.simplivity.v1+json'};
+			return "success"
 			print("\nOmnistack cluster: " + self.auth_ip + " sucessfully authenicated!\n");
 
 	def GetDatastoresAll(self):
@@ -63,6 +64,26 @@ class SimplivityCluster(RestObject):
 			print(printout);
 			print("===========================================\n");
 
+	def GetClustersAll(self):
+		'''Get clusters method'''
+		# Get host jsons
+		clusterList = self.Get("omnistack_clusters", {"show_optional_fields":"true"});
+		# Return if null 
+		if clusterList == {}:
+			return {};
+		return clusterList['omnistack_clusters'];
+
+	def PrintClustersAll(self):
+		'''Print backups method'''
+		clusterList = self.GetClustersAll();
+		if clusterList == {}:
+			return;
+		#Print results
+		print("\n===========================================\n");
+		for cluster in clusterList:
+			printout = str(cluster);
+			print(printout);
+			print("===========================================\n");
 	def GetHostsAll(self):
 		'''Get hosts method, returning list of Simplivity hosts'''
 
