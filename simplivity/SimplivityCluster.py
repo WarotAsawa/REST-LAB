@@ -84,6 +84,7 @@ class SimplivityCluster(RestObject):
 			printout = str(cluster);
 			print(printout);
 			print("===========================================\n");
+	
 	def GetHostsAll(self):
 		'''Get hosts method, returning list of Simplivity hosts'''
 

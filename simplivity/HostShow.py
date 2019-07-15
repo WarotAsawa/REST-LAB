@@ -1,16 +1,18 @@
 # -*- coding: utf-8 -*-
-
-import dash
+#Import standard Python library
+from SimplivityCluster import SimplivityCluster;
+import sys;
+import os.path;
+import dash;
+import logging;
+from datetime import datetime, timedelta;
+#Import external libraries
+sys.path.insert(0, os.path.abspath(os.path.join(os.pardir,"lib")));
 from dash.dependencies import Output, Input, State
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
-from SimplivityCluster import SimplivityCluster;
-import sys;
-import os.path;
 import plotly.graph_objs as go;
-import logging;
-from datetime import datetime, timedelta;
 
 logging.getLogger('werkzeug').setLevel(logging.ERROR);
 #OVC Credential
@@ -215,7 +217,7 @@ def DrawCapacityReport():
                 n_intervals = 0
             )
         ]),
-        html.Div(className='row',style={'width':widthPage, 'margin-left':marginPage,'height':300},children=[
+        html.Div(className='row',style={'width':widthPage, 'margin-left':marginPage,'height':'50vh'},children=[
             html.Div(className = 'col-4', children=[
                 html.Div(style={'text-align':'center','margin-top':'12%'},children=[html.H4( children ="Federation Dashboard")]),
                 html.Div(className='row',children=[
@@ -244,15 +246,14 @@ def DrawCapacityReport():
                 ]),
             ]),
             html.Div(className = 'col-4', children=[
-                html.H5(children='''
-                 Cluster's Data Reduction Ratio.
-                '''),    
-            
-                dcc.Graph(
-                    id='cluster-reduction-graph',
-                    animate=True,
-                    style = {'height':'100%'}           
-                ),
+                html.Div(className='row',style={'height':'10%'},children=[html.H5(children=["Cluster's Data Reduction Ratio."])]),   
+                html.Div(className='row',style={'height':'90%'},children=[
+                    dcc.Graph(
+                        id='cluster-reduction-graph',
+                        animate=True,
+                        style = {'height':'100%','width':'100%'}           
+                    ),
+                ]),
                 dcc.Interval(
                     id = 'cluster-reduction-update',
                     interval = intervalSec * 1000,
@@ -260,15 +261,14 @@ def DrawCapacityReport():
                 )
             ]),
             html.Div(className = 'col-4', children=[
-                html.H5(children='''
-                 Cluster's Data Consumption.
-                '''),    
-            
-                dcc.Graph(
-                    id='cluster-physical-graph',
-                    animate=True,
-                    style = {'height':'100%'}           
-                ),
+                html.Div(className='row',style={'height':'10%'},children=[html.H5(children=["Cluster's Data Consumption."])]),   
+                html.Div(className='row',style={'height':'90%'},children=[
+                    dcc.Graph(
+                        id='cluster-physical-graph',
+                        animate=True,
+                        style = {'height':'100%','width':'100%'}           
+                    ),
+                ]),
                 dcc.Interval(
                     id = 'cluster-physical-update',
                     interval = intervalSec * 1000,
@@ -276,56 +276,52 @@ def DrawCapacityReport():
                 )
             ]),
         ]),
-        html.Div(className='row',style={'width':widthPage,'padding-top':30, 'margin-left':marginPage,'height':hostNum*50+150},children=[
+        html.Div(className='row',style={'width':widthPage,'padding-top':0, 'margin-left':marginPage,'height':(hostNum*25+300)},children=[
             html.Div(className = 'col-4', children=[
-                html.H5(children='''
-                 Cluster's Logical Usage (TiB).
-                '''),    
-            
-                dcc.Graph(
-                    id='cluster-logical-graph',
-                    animate=True,
-                    style = {'height':'100%'}           
-                ),
+                html.Div(className='row',style={'height':'10%'},children=[html.H5(children=["Cluster's Logical Data."])]),   
+                html.Div(className='row',style={'height':'90%'},children=[
+                    dcc.Graph(
+                        id='cluster-logical-graph',
+                        animate=True,
+                        style = {'height':'100%','width':'100%'}           
+                    ),
+                ]),
                 dcc.Interval(
                     id = 'cluster-logical-update',
                     interval = intervalSec * 1000,
                     n_intervals = 0
                 )
             ]),
-            
             html.Div(className = 'col-4', children=[
-                html.H5(children='''
-                 Node's Logical Usage by data type (TiB).
-                '''),    
-            
-                dcc.Graph(
-                    id='logical-graph',
-                    animate=True,
-                    style = {'height':'100%'}           
-                ),
+                html.Div(className='row',style={'height':'10%'},children=[html.H5(children=["Node's Logical Data comsumption (TiB)"])]),   
+                html.Div(className='row',style={'height':'90%'},children=[
+                    dcc.Graph(
+                        id='logical-graph',
+                        animate=True,
+                        style = {'height':'100%','width':'100%'}           
+                    ),
+                ]),
                 dcc.Interval(
                     id = 'logical-update',
                     interval = intervalSec * 1000,
                     n_intervals = 0
                 )
             ]),
-            html.Div(className = 'col-4', children=[ 
-                html.H5(children='''
-                 Node's Physical Usage (TiB).
-                '''), 
-              
-                dcc.Graph(
-                    id='physical-graph',
-                    animate=True,
-                    style = {'height':'100%'}
-                ),
+            html.Div(className = 'col-4', children=[
+                html.Div(className='row',style={'height':'10%'},children=[html.H5(children=["Node's Data comsumption (TiB)"])]),   
+                html.Div(className='row',style={'height':'90%'},children=[
+                    dcc.Graph(
+                        id='physical-graph',
+                        animate=True,
+                        style = {'height':'100%','width':'100%'}           
+                    ),
+                ]),
                 dcc.Interval(
                     id = 'physical-update',
                     interval = intervalSec * 1000,
                     n_intervals = 0
-                ),
-            ])
+                )
+            ]),
         ]),
     ]);
     return report;
