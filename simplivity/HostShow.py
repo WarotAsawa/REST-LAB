@@ -433,7 +433,7 @@ hostNum = GetHostCount();
 
 
 app = dash.Dash(__name__)
-
+app.title = "OVC Mon";
 isCapacity = True;
 isBackup = True;
 
