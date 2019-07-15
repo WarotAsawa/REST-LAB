@@ -46,6 +46,8 @@ def Login(ovcIP, ovcUser, ovcPass):
 
     return result;
 
+#Get Simplivity's Data Methods
+
 def GetClustersCapacityData():
     global ovcIP, clustersList;
 
@@ -206,6 +208,270 @@ def GetBackupLastNDay(n):
             resultList[backup['state']] = 0;
 
     return resultList;
+
+#Update Dashboard Graphs
+
+def UpdateClusterLogical():  
+    data = GetClustersCapacityData();
+    nameCount = 0;
+    maxCap = 0;
+    for name in data['name']:
+        totalCap = data['vmData'][nameCount]+data['localBackup'][nameCount]+data['remoteBackup'][nameCount];
+        nameCount = nameCount + 1;
+        if (totalCap > maxCap):
+                maxCap = totalCap;
+    vmTrace = go.Bar(
+        y = data['name'],
+        x = data['vmData'],
+        name = 'VM Data (TiB)',
+        orientation = 'h',
+        marker = dict(
+            color = 'rgb(91,71,103)'
+            )
+        );
+    localBackupTrace = go.Bar(
+        y = data['name'],
+        x = data['localBackup'],
+        name = 'Local Backup (TiB)',
+        orientation = 'h',
+        marker = dict(
+            color = 'rgb(255,141,109)'
+            )
+        );
+    remoteBackupTrace = go.Bar(
+        y = data['name'],
+        x = data['remoteBackup'],
+        name = 'Remote Backup (TiB)',
+        orientation = 'h',
+        marker = dict(
+            color = 'rgb(128,130,133)'
+            )
+        );
+    dataOutput = [vmTrace,localBackupTrace,remoteBackupTrace];
+    barLayout = go.Layout(xaxis = dict(range = [0,maxCap], title='Effective Capacity (TiB)'),yaxis = dict(range = [-1,nameCount]),barmode="stack");
+    print("\nCluster's Logical Graph updated");
+    return {'data' : dataOutput, 'layout' : barLayout}
+
+def UpdateNodeLogical():
+
+    data = GetHostsCapacityData();
+    nameCount = 0;
+    maxCap = 0;
+    for name in data['name']:
+        totalCap = data['vmData'][nameCount]+data['localBackup'][nameCount]+data['remoteBackup'][nameCount];
+        nameCount = nameCount + 1;
+        if (totalCap > maxCap):
+                maxCap = totalCap;
+    vmTrace = go.Bar(
+        y = data['name'],
+        x = data['vmData'],
+        name = 'VM Data (TiB)',
+        orientation = 'h',
+        marker = dict(
+            color = 'rgb(91,71,103)'
+            )
+        );
+    localBackupTrace = go.Bar(
+        y = data['name'],
+        x = data['localBackup'],
+        name = 'Local Backup (TiB)',
+        orientation = 'h',
+        marker = dict(
+            color = 'rgb(255,141,109)'
+            )
+        );
+    remoteBackupTrace = go.Bar(
+        y = data['name'],
+        x = data['remoteBackup'],
+        name = 'Remote Backup (TiB)',
+        orientation = 'h',
+        marker = dict(
+            color = 'rgb(128,130,133)'
+            )
+        );
+    dataOutput = [vmTrace,localBackupTrace,remoteBackupTrace];
+    barLayout = go.Layout(xaxis = dict(range = [0,maxCap], title='Effective Capacity (TiB)'),yaxis = dict(range = [-1,nameCount]),barmode="stack");
+    print("\nLogical Graph updated");
+    return {'data' : dataOutput, 'layout' : barLayout}
+
+def UpdateNodePhysical():
+
+    physData = GetPhysicalData();
+    #set max x
+    nameCount = 0;
+    maxCap = 0;
+    for name in physData['name']:
+        totalCap = physData['usedCap'][nameCount]+physData['leftCap'][nameCount];
+        nameCount = nameCount + 1;
+        if (totalCap > maxCap):
+                maxCap = totalCap;
+    usedTrace = go.Bar(
+        y = physData['name'],
+        x = physData['usedCap'],
+        name = 'Used Capacity (TiB)',
+        orientation = 'h',
+        marker = dict(
+            color = 'rgb(0,177,136)'
+            )
+        );
+    leftTrace = go.Bar(
+        y = physData['name'],
+        x = physData['leftCap'],
+        name = 'Free Capacity (TiB)',
+        orientation = 'h',
+        marker = dict(
+            color = 'rgb(200,200,200)'
+            )
+        );
+
+    dataOutput = [usedTrace,leftTrace];
+    barLayout = go.Layout(xaxis = dict(range = [0,maxCap], title='Physical Capacity (TiB)'),yaxis = dict(range = [-1,nameCount]),barmode="stack");
+    print("\nPhysical Graph updated");
+    return {'data' : dataOutput, 'layout' : barLayout};
+
+def UpdateClusterReduction():
+    data = GetClustersCapacityData();
+    nameCount = 0;
+    maxCap = 0;
+    for name in data['name']:
+        totalCap = data['efficiency_ratio'][nameCount];
+        nameCount = nameCount + 1;
+        if (totalCap > maxCap):
+                maxCap = totalCap;
+    dedupTrace = go.Bar(
+        y = data['deduplication_ratio'],
+        x = data['name'],
+        name = 'Deduplication Ratio',
+        marker = dict(
+            color = 'rgb(91,71,103)'
+            )
+        );
+    compressTrace = go.Bar(
+        y = data['compression_ratio'],
+        x = data['name'],
+        name = 'Compression Ratio',
+        marker = dict(
+            color = 'rgb(255,141,109)'
+            )
+        );
+    reductTrace = go.Bar(
+        y = data['efficiency_ratio'],
+        x = data['name'],
+        name = 'Efficiency Ratio',
+        marker = dict(
+            color = 'rgb(128,130,133)'
+            )
+        );
+    dataOutput = [dedupTrace,compressTrace,reductTrace];
+    barLayout = go.Layout(xaxis = dict(range = [-1,nameCount]),yaxis = dict(range = [0,maxCap], title='Data Reduction Ratio (x)'), barmode='group');
+    print("\nLogical Graph updated");
+    return {'data' : dataOutput, 'layout' : barLayout}
+
+def UpdateClusterPhysical():
+    physData = GetClustersCapacityData();
+    #set max x
+    nameCount = 0;
+    maxCap = 0;
+    for name in physData['name']:
+        totalCap = physData['used_capacity'][nameCount]+physData['free_space'][nameCount];
+        nameCount = nameCount + 1;
+        if (totalCap > maxCap):
+                maxCap = totalCap;
+    usedTrace = go.Bar(
+        y = physData['used_capacity'],
+        x = physData['name'],
+        name = 'Used Capacity (TiB)',
+        marker = dict(
+            color = 'rgb(0,177,136)'
+            )
+        );
+    leftTrace = go.Bar(
+        y = physData['free_space'],
+        x = physData['name'],
+        name = 'Free Capacity (TiB)',
+        marker = dict(
+            color = 'rgb(200,200,200)'
+            )
+        );
+
+    dataOutput = [usedTrace,leftTrace];
+    barLayout = go.Layout(xaxis = dict(range = [-1,nameCount]),yaxis = dict(range = [0,maxCap], title='Cluster Physical Capacity (TiB)'),barmode="stack");
+    print("\nCluster Physical Graph updated");
+    return {'data' : dataOutput, 'layout' : barLayout};
+
+def UpdateBackupDonuts(day):
+
+    allBackup = GetBackupLastNDay(day);
+    statusList = [];
+    countList = [];
+    title = "Status of backups since " + str(day) + " days";
+    if day > 9000:
+        title = "Status of all backups";
+    holeSize = 0.8;
+    protectedCount = 0;
+    elseCount = 0;
+    for key in allBackup:
+        if key =="Please Login":
+            holeSize = 1;
+        if key =="PROTECTED":
+            protectedCount = protectedCount+allBackup[key];
+        elseCount = elseCount = allBackup[key];
+        statusList.append(key);
+        countList.append(allBackup[key]);
+    protectedRate = protectedCount*100/elseCount;
+    data = {"values":countList,
+        "labels":statusList,
+        "domain": {"column": 0},
+        "name": "Backup Status",
+        "hoverinfo":"label+value+name",
+        "hole": holeSize,
+        "type": "pie",
+        "marker":{"colors":donutColors},
+    }
+    donutLayout = {
+        "title":title,
+        "grid": {"rows": 1, "columns": 1},
+        "annotations": [
+            {
+                "font": {"size": 15},
+                "showarrow": False,
+                "text": (str(protectedRate) + "% \nprotected"),
+                "x": 0.5,
+                "y": 0.5
+            }
+        ]
+    }
+    dataOutput = [data];
+    print("\n24hrs backup updated");
+    return {'data' : dataOutput, 'layout' : donutLayout};
+'''
+def UniversalUpdate():
+    global ovcIP, nodeList, clustersList;
+    outputList = [];
+    outputList.append(UpdateClusterLogical());
+    outputList.append(UpdateClusterPhysical());
+    outputList.append(UpdateClusterReduction());
+    outputList.append(UpdateNodeLogical());
+    outputList.append(UpdateNodePhysical());
+    outputList.append(UpdateBackupDonuts(1));
+    outputList.append(UpdateBackupDonuts(30));
+    outputList.append(UpdateBackupDonuts(9999));
+    if ovcIP == "NA":
+        outputList.append("Please Login");
+        outputList.append("Please Login");
+        outputList.append("Please Login");
+    else:
+        outputList.append(ovcIP);
+        outputList.append(len(hostsList));
+        outputList.append(len(clustersList));
+
+    if ovcIP == "NA":
+        outputList.append("Please Login");
+    else:
+        outputList.append(datetime.now());
+    return outputList;
+'''
+#Draw Graphs DIV
 
 def DrawCapacityReport():
     report = html.Div(id = "capacityReport", className = "container-fluid", children=[
@@ -414,6 +680,7 @@ def DrawHeader():
             n_intervals = 0
             ),
             html.H1(children='Simplivity At A Glance Report'),
+            #html.Button(id='refreshButton',style = {'margin-left':10}, className = 'btn btn-primary',n_clicks=0, children='Refresh')
         ]),
         html.Div(className ='row',children=[
             dcc.Interval(
@@ -428,9 +695,7 @@ def DrawHeader():
     ]);
     return header;
 
-#external_stylesheets = [dbc.themes.BOOTSTRAP];
 hostNum = GetHostCount();
-
 
 app = dash.Dash(__name__)
 app.title = "OVC Mon";
@@ -449,334 +714,49 @@ app.layout = dashboard;
 
 @app.callback(Output('cluster-logical-graph', 'figure'), 
     [Input('cluster-logical-update', 'n_intervals')])
-def UpdateClusterLogical(n):
-
-    data = GetClustersCapacityData();
-    nameCount = 0;
-    maxCap = 0;
-    for name in data['name']:
-        totalCap = data['vmData'][nameCount]+data['localBackup'][nameCount]+data['remoteBackup'][nameCount];
-        nameCount = nameCount + 1;
-        if (totalCap > maxCap):
-                maxCap = totalCap;
-    vmTrace = go.Bar(
-        y = data['name'],
-        x = data['vmData'],
-        name = 'VM Data (TiB)',
-        orientation = 'h',
-        marker = dict(
-            color = 'rgb(91,71,103)'
-            )
-        );
-    localBackupTrace = go.Bar(
-        y = data['name'],
-        x = data['localBackup'],
-        name = 'Local Backup (TiB)',
-        orientation = 'h',
-        marker = dict(
-            color = 'rgb(255,141,109)'
-            )
-        );
-    remoteBackupTrace = go.Bar(
-        y = data['name'],
-        x = data['remoteBackup'],
-        name = 'Remote Backup (TiB)',
-        orientation = 'h',
-        marker = dict(
-            color = 'rgb(128,130,133)'
-            )
-        );
-    dataOutput = [vmTrace,localBackupTrace,remoteBackupTrace];
-    barLayout = go.Layout(xaxis = dict(range = [0,maxCap], title='Effective Capacity (TiB)'),yaxis = dict(range = [-1,nameCount]),barmode="stack");
-    print("\nCluster's Logical Graph updated");
-    return {'data' : dataOutput, 'layout' : barLayout}
+def OnUpdateClusterLogical(n):
+    return UpdateClusterLogical();
 
 @app.callback(Output('logical-graph', 'figure'), 
     [Input('logical-update', 'n_intervals')])
-def UpdateLogical(n):
-
-    data = GetHostsCapacityData();
-    nameCount = 0;
-    maxCap = 0;
-    for name in data['name']:
-        totalCap = data['vmData'][nameCount]+data['localBackup'][nameCount]+data['remoteBackup'][nameCount];
-        nameCount = nameCount + 1;
-        if (totalCap > maxCap):
-                maxCap = totalCap;
-    vmTrace = go.Bar(
-        y = data['name'],
-        x = data['vmData'],
-        name = 'VM Data (TiB)',
-        orientation = 'h',
-        marker = dict(
-            color = 'rgb(91,71,103)'
-            )
-        );
-    localBackupTrace = go.Bar(
-        y = data['name'],
-        x = data['localBackup'],
-        name = 'Local Backup (TiB)',
-        orientation = 'h',
-        marker = dict(
-            color = 'rgb(255,141,109)'
-            )
-        );
-    remoteBackupTrace = go.Bar(
-        y = data['name'],
-        x = data['remoteBackup'],
-        name = 'Remote Backup (TiB)',
-        orientation = 'h',
-        marker = dict(
-            color = 'rgb(128,130,133)'
-            )
-        );
-    dataOutput = [vmTrace,localBackupTrace,remoteBackupTrace];
-    barLayout = go.Layout(xaxis = dict(range = [0,maxCap], title='Effective Capacity (TiB)'),yaxis = dict(range = [-1,nameCount]),barmode="stack");
-    print("\nLogical Graph updated");
-    return {'data' : dataOutput, 'layout' : barLayout}
+def OnUpdateNodeLogical(n):
+    return UpdateNodeLogical();
 
 @app.callback(Output('physical-graph', 'figure'), 
     [Input('physical-update', 'n_intervals')])
-def UpdatePhysical(n):
-    
-    physData = GetPhysicalData();
-    #set max x
-    nameCount = 0;
-    maxCap = 0;
-    for name in physData['name']:
-        totalCap = physData['usedCap'][nameCount]+physData['leftCap'][nameCount];
-        nameCount = nameCount + 1;
-        if (totalCap > maxCap):
-                maxCap = totalCap;
-    usedTrace = go.Bar(
-        y = physData['name'],
-        x = physData['usedCap'],
-        name = 'Used Capacity (TiB)',
-        orientation = 'h',
-        marker = dict(
-            color = 'rgb(0,177,136)'
-            )
-        );
-    leftTrace = go.Bar(
-        y = physData['name'],
-        x = physData['leftCap'],
-        name = 'Free Capacity (TiB)',
-        orientation = 'h',
-        marker = dict(
-            color = 'rgb(200,200,200)'
-            )
-        );
-
-    dataOutput = [usedTrace,leftTrace];
-    barLayout = go.Layout(xaxis = dict(range = [0,maxCap], title='Physical Capacity (TiB)'),yaxis = dict(range = [-1,nameCount]),barmode="stack");
-    print("\nPhysical Graph updated");
-    return {'data' : dataOutput, 'layout' : barLayout};
-
+def OnUpdateNodePhysical(n):
+    return UpdateNodePhysical(); 
 
 @app.callback(Output('cluster-reduction-graph', 'figure'), 
     [Input('cluster-reduction-update', 'n_intervals')])
-def UpdateReduction(n):
-    data = GetClustersCapacityData();
-    nameCount = 0;
-    maxCap = 0;
-    for name in data['name']:
-        totalCap = data['efficiency_ratio'][nameCount];
-        nameCount = nameCount + 1;
-        if (totalCap > maxCap):
-                maxCap = totalCap;
-    dedupTrace = go.Bar(
-        y = data['deduplication_ratio'],
-        x = data['name'],
-        name = 'Deduplication Ratio',
-        marker = dict(
-            color = 'rgb(91,71,103)'
-            )
-        );
-    compressTrace = go.Bar(
-        y = data['compression_ratio'],
-        x = data['name'],
-        name = 'Compression Ratio',
-        marker = dict(
-            color = 'rgb(255,141,109)'
-            )
-        );
-    reductTrace = go.Bar(
-        y = data['efficiency_ratio'],
-        x = data['name'],
-        name = 'Efficiency Ratio',
-        marker = dict(
-            color = 'rgb(128,130,133)'
-            )
-        );
-    dataOutput = [dedupTrace,compressTrace,reductTrace];
-    barLayout = go.Layout(xaxis = dict(range = [-1,nameCount]),yaxis = dict(range = [0,maxCap], title='Data Reduction Ratio (x)'), barmode='group');
-    print("\nLogical Graph updated");
-    return {'data' : dataOutput, 'layout' : barLayout}
+def OnUpdateClusterReduction(n):
+    return UpdateClusterReduction();
 
 @app.callback(Output('cluster-physical-graph', 'figure'), 
     [Input('cluster-physical-update', 'n_intervals')])
-def UpdateClusterPhysical(n):
-    
-    physData = GetClustersCapacityData();
-    #set max x
-    nameCount = 0;
-    maxCap = 0;
-    for name in physData['name']:
-        totalCap = physData['used_capacity'][nameCount]+physData['free_space'][nameCount];
-        nameCount = nameCount + 1;
-        if (totalCap > maxCap):
-                maxCap = totalCap;
-    usedTrace = go.Bar(
-        y = physData['used_capacity'],
-        x = physData['name'],
-        name = 'Used Capacity (TiB)',
-        marker = dict(
-            color = 'rgb(0,177,136)'
-            )
-        );
-    leftTrace = go.Bar(
-        y = physData['free_space'],
-        x = physData['name'],
-        name = 'Free Capacity (TiB)',
-        marker = dict(
-            color = 'rgb(200,200,200)'
-            )
-        );
-
-    dataOutput = [usedTrace,leftTrace];
-    barLayout = go.Layout(xaxis = dict(range = [-1,nameCount]),yaxis = dict(range = [0,maxCap], title='Physical Capacity (TiB)'),barmode="stack");
-    print("\nCluster Physical Graph updated");
-    return {'data' : dataOutput, 'layout' : barLayout};
+def OnUpdateClusterPhysical(n):
+    return UpdateClusterPhysical();
 
 @app.callback(Output('24h-backup', 'figure'), 
     [Input('24h-update', 'n_intervals')])
-def dayUpdate(n):
-    
-    allBackup = GetBackupLastNDay(1);
-    statusList = [];
-    countList = [];
-    donutLayout = {
-        "title":"Statuses of Backups",
-        "grid": {"rows": 1, "columns": 1},
-        "annotations": [
-            {
-                "font": {"size": 20},
-                "showarrow": False,
-                "text": "24 Hrs",
-                "x": 0.5,
-                "y": 0.5
-            }
-        ]
-    }
-    holeSize = 0.8;
-
-    for key in allBackup:
-        if key =="Please Login":
-            holeSize = 1;
-        statusList.append(key);
-        countList.append(allBackup[key]);
-    data = {"values":countList,
-        "labels":statusList,
-        "domain": {"column": 0},
-        "name": "Backup Status",
-        "hoverinfo":"label+percent+name",
-        "hole": holeSize,
-        "type": "pie",
-        "marker":{"colors":donutColors},
-    }
-    dataOutput = [data];
-    print("\n24hrs backup updated");
-    return {'data' : dataOutput, 'layout' : donutLayout};
+def OnDayBackupUpdate(n):
+    return UpdateBackupDonuts(1);
 
 @app.callback(Output('30d-backup', 'figure'), 
     [Input('30d-update', 'n_intervals')])
-def monthUpdate(n):
-
-    allBackup = GetBackupLastNDay(30);
-    statusList = [];
-    countList = [];
-    donutLayout = {
-        "title":"Statuses of Backups",
-        "grid": {"rows": 1, "columns": 1},
-        "annotations": [
-            {
-                "font": {"size": 20},
-                "showarrow": False,
-                "text": "1 Month",
-                "x": 0.5,
-                "y": 0.5
-            }
-        ]
-    }
-
-    holeSize = 0.8;
-
-    for key in allBackup:
-        if key =="Please Login":
-               holeSize = 1;
-        statusList.append(key);
-        countList.append(allBackup[key]);
-    data = {"values":countList,
-        "labels":statusList,
-        "domain": {"column": 0},
-        "name": "Backup Status",
-        "hoverinfo":"label+percent+name",
-        "hole": holeSize,
-        "type": "pie",
-        "marker":{"colors":donutColors},
-    }
-    dataOutput = [data];
-    print("\n30hrs backup updated");
-    return {'data' : dataOutput, 'layout' : donutLayout};
-
+def OnMonthBackupUpdate(n):
+    return UpdateBackupDonuts(30);
 @app.callback(Output('all-backup', 'figure'), 
     [Input('all-update', 'n_intervals')])
-def allUpdate(n):
-
-    completeCount = 0;
-    backupCount = 0;
-    allBackup = GetBackupLastNDay(9999);
-    statusList = [];
-    countList = [];
-    donutLayout = {
-        "title":"Statuses of Backups",
-        "grid": {"rows": 1, "columns": 1},
-        "annotations": [
-            {
-                "font": {"size": 20},
-                "showarrow": False,
-                "text": "All Backups",
-                "x": 0.5,
-                "y": 0.5
-            }
-        ]
-    }
-    holeSize = 0.8;
-
-    for key in allBackup:
-        if key =="Please Login":
-               holeSize = 1;
-        statusList.append(key);
-        countList.append(allBackup[key]);
-    data = {"values":countList,
-        "labels":statusList,
-        "domain": {"column": 0},
-        "name": "Backup Status",
-        "hoverinfo":"label+percent+name",
-        "hole": holeSize,
-        "type": "pie",
-        "marker":{"colors":donutColors},
-    }
-    dataOutput = [data];
-    print("\nAll backup updated");
-    return {'data' : dataOutput, 'layout' : donutLayout};
+def OnAllBackupUpdate(n):
+    return UpdateBackupDonuts(9999);
 
 @app.callback(Output('logInMessage', 'children'),
                 [Input('loginButton', 'n_clicks')],
                 [State('ipInput', 'value'),
                 State('userInput', 'value'),
                 State('passwordInput','value')])
-def loginClick(n_clicks, input1, input2, input3):
+def OnLoginClick(n_clicks, input1, input2, input3):
     global ovcIP, ovcPass, ovcUser;
     if n_clicks == 0:
         return;
@@ -792,6 +772,7 @@ def loginClick(n_clicks, input1, input2, input3):
         print 'OVCIP Udated';
         print ovcIP;
         return 'Login Successful';
+
 
 @app.callback(Output('relogin', 'interval'), 
     [Input('relogin', 'n_intervals')])
@@ -812,7 +793,7 @@ def reLogin(n):
         Output('clusterSum', 'children'),
     ],
     [Input('summary-update', 'n_intervals')])
-def UpdateSummary(n):
+def OnUpdateSummary(n):
     global ovcIP, nodesList, clustersList;
     if ovcIP == "NA":
         return ['Please Login','Please Login','Please Login'];
@@ -831,7 +812,7 @@ def AutoUpdate(n):
         return 'Please Login'
     
     UpdateAllInventory();
-
+    hostNum = GetHostCount();
     return datetime.now();
 
 

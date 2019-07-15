@@ -20,7 +20,10 @@ time = Time.GetInstance();
 llCluster = SimplivityCluster("172.30.5.31", "administrator@vsphere.local", "P@ssw0rd");
 llCluster.Initialize();
 yesterday = datetime.now() - timedelta(days=1)
-llCluster.PrintClustersAll();
+yesterweek = datetime.now() - timedelta(days=7)
+
+llCluster.BackUpsSummaryFrom(yesterday);
+llCluster.BackUpsSummaryFrom(yesterweek);
 
 #llCluster.PrintHostsAll();
 

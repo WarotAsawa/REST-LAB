@@ -203,7 +203,8 @@ class SimplivityCluster(RestObject):
 	def GetBackUpsFrom(self, time):
 		'''Get backups method'''
 		# Get host jsons
-		backupList = self.Get("backups",{'created_after':Time.GetInstance().UTCToISO(time)});
+		backupList = self.Get("backups",{'created_after':str(Time.GetInstance().UTCToISO(time))});
+		print(Time.GetInstance().UTCToISO(time));
 		# Return if null 
 		if backupList == {}:
 			return {};
