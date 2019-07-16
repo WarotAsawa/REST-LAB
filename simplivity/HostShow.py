@@ -23,6 +23,10 @@ llCluster = {};
 #Inventory
 hostsList = {}
 clustersList = {};
+#List of graph and text that need update
+allGraph = {};
+allText = {};
+allOutput = [];
 #Interval
 intervalSec = 5;
 reloginInterval = 1800;
@@ -35,6 +39,49 @@ def UpdateAllInventory():
           return;
     clustersList = llCluster.GetClustersAll();
     hostsList = llCluster.GetHostsAll();
+
+def AddGraph(id):
+    global allGraph, allOutput;
+    allGraph[id] = dcc.Graph(id=id,animate=True,style = {'height':'100%','width':'100%'});
+    allOutput.append(Output(id,'figure'));
+
+def AddText(hType,id,string):
+    global allText, allOutput;
+    if hType == "H1":
+        allText[id] = html.H1(id=id,style={'display':'inline-block'}, children =string);
+    if hType == "H2":
+        allText[id] = html.H2(id=id,style={'display':'inline-block'}, children =string);
+    if hType == "H3":
+        allText[id] = html.H3(id=id,style={'display':'inline-block'}, children =string);
+    if hType == "H4":
+        allText[id] = html.H4(id=id,style={'display':'inline-block'}, children =string);
+    if hType == "H5":
+        allText[id] = html.H5(id=id,style={'display':'inline-block'}, children =string);
+    if hType == "H6":
+        allText[id] = html.H6(id=id,style={'display':'inline-block'}, children =string);
+    allOutput.append(Output(id,'children'));
+
+def DrawText(id):
+    global allText;
+    return allText[id];
+
+def DrawGraph(id):
+    global allGraph;
+    return allGraph[id];
+
+def InitialOutputComponent():
+    AddText("H5", 'ipSum', 'Please Login');
+    AddText("H5", 'nodeSum', 'Please Login');
+    AddText("H5", 'clusterSum', 'Please Login');
+    AddText("H6", 'lastUpdate', 'Please Login');
+    AddGraph('cluster-reduction-graph');
+    AddGraph('cluster-physical-graph');
+    AddGraph('cluster-logical-graph');
+    AddGraph('logical-graph');
+    AddGraph('physical-graph');
+    AddGraph('24h-backup');
+    AddGraph('30d-backup');
+    AddGraph('all-backup');
 
 def Login(ovcIP, ovcUser, ovcPass):
     global llCluster;
@@ -364,7 +411,7 @@ def UpdateClusterReduction():
         );
     dataOutput = [dedupTrace,compressTrace,reductTrace];
     barLayout = go.Layout(xaxis = dict(range = [-1,nameCount]),yaxis = dict(range = [0,maxCap], title='Data Reduction Ratio (x)'), barmode='group');
-    print("\nLogical Graph updated");
+    print("\nCluster reduction Graph updated");
     return {'data' : dataOutput, 'layout' : barLayout}
 
 def UpdateClusterPhysical():
@@ -442,35 +489,44 @@ def UpdateBackupDonuts(day):
         ]
     }
     dataOutput = [data];
-    print("\n24hrs backup updated");
+    print("\n" + str(day) + "days backup updated");
     return {'data' : dataOutput, 'layout' : donutLayout};
-'''
+
 def UniversalUpdate():
     global ovcIP, nodeList, clustersList;
     outputList = [];
-    outputList.append(UpdateClusterLogical());
-    outputList.append(UpdateClusterPhysical());
+    ipSum = "";
+    nodeSum = "";
+    clusterSum = "";
+    lastUpdate = "";
+
+    if ovcIP == "NA":
+        ipSum = "Please Login";
+        nodeSum = "Please Login";
+        clusterSum = "Please Login";
+        lastUpdate = "Please Login";
+    else:
+        ipSum = ovcIP;
+        nodeSum= len(hostsList);
+        clusterSum = len(clustersList);
+        lastUpdate = datetime.now();
+
+    outputList.append(ipSum);
+    outputList.append(nodeSum);
+    outputList.append(clusterSum);
+    outputList.append(lastUpdate);
+    
     outputList.append(UpdateClusterReduction());
+    outputList.append(UpdateClusterPhysical());
+    outputList.append(UpdateClusterLogical());
     outputList.append(UpdateNodeLogical());
     outputList.append(UpdateNodePhysical());
     outputList.append(UpdateBackupDonuts(1));
     outputList.append(UpdateBackupDonuts(30));
     outputList.append(UpdateBackupDonuts(9999));
-    if ovcIP == "NA":
-        outputList.append("Please Login");
-        outputList.append("Please Login");
-        outputList.append("Please Login");
-    else:
-        outputList.append(ovcIP);
-        outputList.append(len(hostsList));
-        outputList.append(len(clustersList));
 
-    if ovcIP == "NA":
-        outputList.append("Please Login");
-    else:
-        outputList.append(datetime.now());
     return outputList;
-'''
+
 #Draw Graphs DIV
 
 def DrawCapacityReport():
@@ -487,38 +543,34 @@ def DrawCapacityReport():
             html.Div(className = 'col-4', children=[
                 html.Div(style={'text-align':'center','margin-top':'12%'},children=[html.H4( children ="Federation Dashboard")]),
                 html.Div(className='row',children=[
-                    html.Div(className='col-6',style={'text-align':'right', 'vertical-align':'center'},children=[
-                        html.H5(style={'display':'inline-block','margin-top':'5%'}, children ="OVC IP Address :"),
+                    html.Div(className='col-6',style={'text-align':'right', 'vertical-align':'center','margin-top':'5%'},children=[
+                        html.H5(style={'display':'inline-block'}, children ="OVC IP Address :"),
                     ]),
-                    html.Div(className='col-6',style={'text-align':'left', 'vertical-align':'center'},children=[
-                        html.H5(id='ipSum',style={'display':'inline-block','margin-top':'5%'}, children ="Please Login"),
-                    ]),
-                ]),
-                html.Div(className='row',children=[
-                    html.Div(className='col-6',style={'text-align':'right', 'vertical-align':'center'},children=[
-                        html.H5(style={'display':'inline-block','margin-top':'5%'}, children ="Total Nodes :"),
-                    ]),
-                    html.Div(className='col-6',style={'text-align':'left', 'vertical-align':'center'},children=[
-                        html.H5(id='nodeSum',style={'display':'inline-block','margin-top':'5%'}, children ="Please Login"),
+                    html.Div(className='col-6',style={'text-align':'left', 'vertical-align':'center','margin-top':'5%'},children=[
+                        DrawText('ipSum')
                     ]),
                 ]),
                 html.Div(className='row',children=[
-                    html.Div(className='col-6',style={'text-align':'right', 'vertical-align':'center'},children=[
-                        html.H5(style={'display':'inline-block','margin-top':'5%'}, children ="Total Clusters :"),
+                    html.Div(className='col-6',style={'text-align':'right', 'vertical-align':'center','margin-top':'5%'},children=[
+                        html.H5(style={'display':'inline-block'}, children ="Total Nodes :"),
                     ]),
-                    html.Div(className='col-6',style={'text-align':'left', 'vertical-align':'center'},children=[
-                        html.H5(id='clusterSum',style={'display':'inline-block','margin-top':'5%'}, children ="Please Login"),
+                    html.Div(className='col-6',style={'text-align':'left', 'vertical-align':'center','margin-top':'5%'},children=[
+                        DrawText('nodeSum')
+                    ]),
+                ]),
+                html.Div(className='row',children=[
+                    html.Div(className='col-6',style={'text-align':'right', 'vertical-align':'center','margin-top':'5%'},children=[
+                        html.H5(style={'display':'inline-block'}, children ="Total Clusters :"),
+                    ]),
+                    html.Div(className='col-6',style={'text-align':'left', 'vertical-align':'center','margin-top':'5%'},children=[
+                        DrawText('clusterSum')
                     ]),
                 ]),
             ]),
             html.Div(className = 'col-4', children=[
                 html.Div(className='row',style={'height':'10%'},children=[html.H5(children=["Cluster's Data Reduction Ratio."])]),   
                 html.Div(className='row',style={'height':'90%'},children=[
-                    dcc.Graph(
-                        id='cluster-reduction-graph',
-                        animate=True,
-                        style = {'height':'100%','width':'100%'}           
-                    ),
+                    DrawGraph('cluster-reduction-graph')
                 ]),
                 dcc.Interval(
                     id = 'cluster-reduction-update',
@@ -529,11 +581,7 @@ def DrawCapacityReport():
             html.Div(className = 'col-4', children=[
                 html.Div(className='row',style={'height':'10%'},children=[html.H5(children=["Cluster's Data Consumption."])]),   
                 html.Div(className='row',style={'height':'90%'},children=[
-                    dcc.Graph(
-                        id='cluster-physical-graph',
-                        animate=True,
-                        style = {'height':'100%','width':'100%'}           
-                    ),
+                    DrawGraph('cluster-physical-graph')
                 ]),
                 dcc.Interval(
                     id = 'cluster-physical-update',
@@ -546,11 +594,7 @@ def DrawCapacityReport():
             html.Div(className = 'col-4', children=[
                 html.Div(className='row',style={'height':'10%'},children=[html.H5(children=["Cluster's Logical Data."])]),   
                 html.Div(className='row',style={'height':'90%'},children=[
-                    dcc.Graph(
-                        id='cluster-logical-graph',
-                        animate=True,
-                        style = {'height':'100%','width':'100%'}           
-                    ),
+                    DrawGraph('cluster-logical-graph')
                 ]),
                 dcc.Interval(
                     id = 'cluster-logical-update',
@@ -561,11 +605,7 @@ def DrawCapacityReport():
             html.Div(className = 'col-4', children=[
                 html.Div(className='row',style={'height':'10%'},children=[html.H5(children=["Node's Logical Data comsumption (TiB)"])]),   
                 html.Div(className='row',style={'height':'90%'},children=[
-                    dcc.Graph(
-                        id='logical-graph',
-                        animate=True,
-                        style = {'height':'100%','width':'100%'}           
-                    ),
+                    DrawGraph('logical-graph')
                 ]),
                 dcc.Interval(
                     id = 'logical-update',
@@ -576,11 +616,7 @@ def DrawCapacityReport():
             html.Div(className = 'col-4', children=[
                 html.Div(className='row',style={'height':'10%'},children=[html.H5(children=["Node's Data comsumption (TiB)"])]),   
                 html.Div(className='row',style={'height':'90%'},children=[
-                    dcc.Graph(
-                        id='physical-graph',
-                        animate=True,
-                        style = {'height':'100%','width':'100%'}           
-                    ),
+                    DrawGraph('physical-graph')
                 ]),
                 dcc.Interval(
                     id = 'physical-update',
@@ -689,7 +725,7 @@ def DrawHeader():
             n_intervals = 0
             ),
             html.H6(children='Last sucessful update at :  '),
-            html.H6(id = 'lastUpdate',children='Please Login'),
+            DrawText('lastUpdate')
         ]),
 
     ]);
@@ -702,6 +738,7 @@ app.title = "OVC Mon";
 isCapacity = True;
 isBackup = True;
 
+InitialOutputComponent();
 donutColors = ['rgb(0,177,136)','rgb(91,71,103)','rgb(255,141,109)','rgb(128,130,133)','rgb(100,100,100)'];
 
 loginPage = DrawLoginPage();
