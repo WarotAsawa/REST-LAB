@@ -1,6 +1,6 @@
 # HPE Simplivity REST API Connector
 
-Simplivity REST API connector provides some of the REST API capabilities of HPE Simplivity. There are sample code for Simplivity connection, which you can edit or add some modules as you like.
+Simplivity REST API connector provides methods for getting some information from Simplivity by calling Simplivity's REST API interface. There are sample code for Simplivity connection, which you can edit or add some modules as you like.
 
 ## Getting Started
 
@@ -11,7 +11,7 @@ These instructions will help you understand about how to you this code.
 Simply get into the directory using this following path
 
 ```
-cd ./REST-LAB/simplivity
+cd /<install-directory>/REST-LAB/simplivity
 ```
 You can find these following file in the directory
 * **SimplivityCluster.py** - Contains Simplivity REST API features.
@@ -46,7 +46,7 @@ You can find SimplivityCluster example in SimplivityConnector. Just create new S
 ```
 from SimplivityCluster import SimplivityCluster;
 
-llCluster = SimplivityCluster("172.30.5.31", "administrator@vsphere.local", "P@ssw0rd");
+llCluster = SimplivityCluster("<ovc'shostname or IP address>", "<ovc's username>", "<ovs's password>");
 llCluster.Initialize();
 
 llCluster.PrintHostsAll();
@@ -54,7 +54,7 @@ llCluster.PrintHostsAll();
 
 ## How to use OVC-MON.py
 
-OVC-MON.py is an example which provides a webservice that will display Simplivity Dashboard. Simpliy run OVC-MON.py
+OVC-MON.py is an example which provides a webservice that will display Simplivity Dashboard. Simpliy run OVC-MON.py in the simplivity directory.
 
 ```
 python OVC-MON.py
@@ -63,7 +63,7 @@ python OVC-MON.py
 Then open web browser and open OVC Mon page
 
 ```
-http://<ovc-mon-ip>:8080
+http://<ovc-mon-ip>
 ```
 
 Using web page's top banner to login to OVC.

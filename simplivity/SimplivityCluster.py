@@ -123,11 +123,20 @@ class SimplivityCluster(RestObject):
 	def GetBackUpsAll(self):
 		'''Get backups method'''
 		# Get host jsons
-		backupList = self.Get("backups");
+		offset = 0;
+		backupList = [];
+		while offset <= 210000:
+			backup = self.Get("backups", {"limit":3000,'offset':offset});
+			if ('backups' in backup):
+				backupList.extend(backup['backups']);
+				offset = offset + 3000,;
+			else:
+				break;
+		#print(backupList)
 		# Return if null 
 		if backupList == {}:
 			return {};
-		return backupList['backups'];
+		return backupList;
 
 	def PrintBackUpsAll(self):
 		'''Print backups method'''
@@ -151,7 +160,7 @@ class SimplivityCluster(RestObject):
 	def GetVMsAll(self):
 		'''Get VMs methods, returning list of Simplivity VMs'''
 		# Get host jsons
-		dsList = self.Get("virtual_machines", {"show_optional_fields":"true"});
+		dsList = self.Get("virtual_machines", {"show_optional_fields":"true", "limit":3000});
 		# Return if null 
 		if dsList == {}:
 			return {};
