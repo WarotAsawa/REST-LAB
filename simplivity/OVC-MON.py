@@ -399,7 +399,7 @@ def UpdateClusterLogical():
             )
         );
     dataOutput = [vmTrace,localBackupTrace,remoteBackupTrace];
-    barLayout = go.Layout(legend_orientation="h",yaxis = dict(range = [0,maxCap], title='Effective Capacity (TiB)'),xaxis = dict(range = [-1,nameCount]),barmode="stack");
+    barLayout = go.Layout(height=300,margin=dict(l=60, r=60, t=40, b=00),legend_orientation="h",yaxis = dict(range = [0,maxCap], title='Effective Capacity (TiB)'),xaxis = dict(range = [-1,nameCount]),barmode="stack");
     print("\nCluster's Logical Graph updated");
     return {'data' : dataOutput, 'layout' : barLayout}
 
@@ -441,7 +441,7 @@ def UpdateNodeLogical():
             )
         );
     dataOutput = [vmTrace,localBackupTrace,remoteBackupTrace];
-    barLayout = go.Layout(legend_orientation="h",yaxis = dict(range = [0,maxCap], title='Effective Capacity (TiB)'),xaxis = dict(range = [-1,nameCount]),barmode="stack");
+    barLayout = go.Layout(height=300,margin=dict(l=100, r=100, t=40, b=00),legend_orientation="h",yaxis = dict(range = [0,maxCap], title='Effective Capacity (TiB)'),xaxis = dict(range = [-1,nameCount]),barmode="stack");
     print("\nLogical Graph updated");
     return {'data' : dataOutput, 'layout' : barLayout}
 
@@ -476,7 +476,7 @@ def UpdateNodePhysical():
         );
 
     dataOutput = [usedTrace,leftTrace];
-    barLayout = go.Layout(legend_orientation="h",yaxis = dict(range = [0,maxCap], title='Physical Capacity (TiB)'),xaxis = dict(range = [-1,nameCount]),barmode="stack");
+    barLayout = go.Layout(height=300,margin=dict(l=100, r=100, t=40, b=00),legend_orientation="h",yaxis = dict(range = [0,maxCap], title='Physical Capacity (TiB)'),xaxis = dict(range = [-1,nameCount]),barmode="stack");
     print("\nPhysical Graph updated");
     return {'data' : dataOutput, 'layout' : barLayout};
 
@@ -514,7 +514,7 @@ def UpdateClusterReduction():
             )
         );
     dataOutput = [dedupTrace,compressTrace,reductTrace];
-    barLayout = go.Layout(legend_orientation="h",xaxis = dict(range = [-1,nameCount]),yaxis = dict(range = [0,maxCap], title='Data Reduction Ratio (x)'), barmode='group');
+    barLayout = go.Layout(height=300,margin=dict(l=60, r=60, t=40, b=00),legend_orientation="h",xaxis = dict(range = [-1,nameCount]),yaxis = dict(range = [0,maxCap], title='Data Reduction Ratio (x)'), barmode='group');
     print("\nCluster reduction Graph updated");
     return {'data' : dataOutput, 'layout' : barLayout}
 
@@ -546,7 +546,7 @@ def UpdateClusterPhysical():
         );
 
     dataOutput = [usedTrace,leftTrace];
-    barLayout = go.Layout(legend_orientation="h",xaxis = dict(range = [-1,nameCount]),yaxis = dict(range = [0,maxCap], title='Cluster Physical Capacity (TiB)'),barmode="stack");
+    barLayout = go.Layout(height=300,margin=dict(l=60, r=60, t=40, b=00),legend_orientation="h",xaxis = dict(range = [-1,nameCount]),yaxis = dict(range = [0,maxCap], title='Cluster Physical Capacity (TiB)'),barmode="stack");
     print("\nCluster Physical Graph updated");
     return {'data' : dataOutput, 'layout' : barLayout};
 
@@ -581,6 +581,8 @@ def UpdateBackupDonuts(day):
         "marker":{"colors":donutColors},
     }
     donutLayout = {
+        "height":300,
+        "margin":dict(l=60, r=60, t=40, b=00),
         "title":title,
         "grid": {"rows": 1, "columns": 1},
         "annotations": [
@@ -622,7 +624,7 @@ def UpdateVMPolicy():
     );
     
     dataOutput = [policyTrace];
-    barLayout = go.Layout(legend_orientation="h",xaxis = dict(range = [0,maxCap], title = "Number of VM"),yaxis = dict(range = [-1,nameCount]),barmode="stack");
+    barLayout = go.Layout(height=300,margin=dict(l=100, r=60, t=10, b=00),legend_orientation="h",xaxis = dict(range = [0,maxCap], title = "Number of VM"),yaxis = dict(range = [-1,nameCount]),barmode="stack");
     print("\n VM Policy Graph updated");
     return {'data' : dataOutput, 'layout' : barLayout};
 
@@ -650,7 +652,7 @@ def UpdateBackupHistogram():
     );
     
     dataOutput = [policyTrace];
-    barLayout = go.Layout(legend_orientation="h", yaxis = dict(range = [0,maxCap], title = "Number of Backups"),xaxis = dict(range = [-1,nameCount]),barmode="stack");
+    barLayout = go.Layout(height=300,margin=dict(l=60, r=60, t=40, b=40),legend_orientation="h", yaxis = dict(range = [0,maxCap], title = "Number of Backups"),xaxis = dict(range = [-1,nameCount]),title = "Days of Retention",barmode="stack");
     print("\n Backup Histogram Graph updated");
     return {'data' : dataOutput, 'layout' : barLayout};
 
@@ -700,10 +702,11 @@ def UpdateBackupHeatMap():
 
         text.append(str(dayList[i].day) + "-" + str(dayList[i].month) + '-' + str(dayList[i].year) + " : " + str(heat[i]));
     #print(xLabel);
-    colorscale=[[0,'rgb(220,220,220)'],[0.01,'rgb(220,220,220)'],
-    [0.1,'rgb(165,209,199)'],[0.4,'rgb(165,209,199)'],
-    [0.4,'rgb(110,198,178)'],[0.6,'rgb(110,198,178)'],
-    [0.8,'rgb(55,188,157)'],[0.9,'rgb(55,188,157)'],[1,'rgb(0,177,136)']];
+    colorscale=[[0,'rgb(220,220,220)'],[0.0001,'rgb(220,220,220)'],
+    [0.0001,'rgb(165,209,199)'],[0.1,'rgb(165,209,199)'],
+    [0.1,'rgb(110,198,178)'],[0.5,'rgb(110,198,178)'],
+    [0.5,'rgb(55,188,157)'],[0.8,'rgb(55,188,157)'],
+    [0.8,'rgb(0,177,136)'],[1,'rgb(0,177,136)']];
     data = [go.Heatmap(
         x = weeknumber_of_dates,
         y = weekdays_in_year,
@@ -717,15 +720,18 @@ def UpdateBackupHeatMap():
         )
     ]
     layout = go.Layout(
-        title="Backup Heatmap",
+        width=880,
+        title="Backup per day's Heatmap",
         height=280,
         yaxis=dict(
+            automargin = True,
             showline = False, showgrid = False, zeroline = False,
             tickmode="array",
             ticktext=weekDay,
             tickvals=[0,1,2,3,4,5,6],
         ),
         xaxis=dict(
+            automargin = True,
             showline = False, showgrid = False, zeroline = False,
             tickmode="array",
             ticktext=xLabel,
@@ -780,7 +786,7 @@ def UniversalUpdate():
 def DrawCapacityReport():
     report = html.Div(id = "capacityReport", className = "container-fluid", children=[
         html.Div(className ='row mb-4 mt-4 pl-4',children=[
-            html.H3(children='Simplivity quick summary.'),
+            html.H4(children='Simplivity quick summary.'),
             dcc.Interval(
                 id = 'summary-update',
                 interval = intervalSec * 1000,
@@ -840,7 +846,7 @@ def DrawCapacityReport():
         ]),
         #Cluster Summary
         html.Div(className ='row mt-4 mb-4 pl-4',children=[
-            html.H3(children='Simplivity Capacity Reports.'),
+            html.H4(children='Simplivity Capacity Reports.'),
         ]),
         html.Div(className='row',children=[   
             html.Div(className = 'col-xl-4 col-sm-12', children=[
@@ -898,7 +904,7 @@ def DrawCapacityReport():
 def DrawBackupReport():
     report = html.Div(id = "backupReport", className = "container-fluid", children=[
         html.Div(className ='row mt-4 mb-4 pl-4',children=[
-            html.H3(children='Simplivity Backup Reports.'),
+            html.H4(children='Simplivity Backup Reports.'),
         ]),
         html.Div(className='row',children=[   
             html.Div(className = 'col-xl-4 col-sm-12', children=[
@@ -942,7 +948,7 @@ def DrawBackupReport():
                     html.Div(className = 'card-header py-3 d-flex flex-row align-items-center justify-content-between',children=[
                         html.Div(className = 'h6 m-0 font-weight-bold', children =  'Backup Creation Heatmap'),
                     ]),
-                    html.Div(className = 'card-body', children = [DrawGraph('heatmap')]),
+                    html.Div(className = 'card-body',style={"display":"block","margin-left":"auto","margin-right":"auto"}, children = [DrawGraph('heatmap')]),
                 ]),
             ]),
             dcc.Interval(
@@ -988,7 +994,7 @@ def DrawHeader():
             interval = reloginInterval * 1000,
             n_intervals = 0
             ),
-            html.H1(children='Simplivity At A Glance Report'),
+            html.H3(children='Simplivity At A Glance Report'),
             #html.Button(id='refreshButton',style = {'margin-left':10}, className = 'btn btn-primary',n_clicks=0, children='Refresh')
         ]),
         html.Div(className ='row',children=[
