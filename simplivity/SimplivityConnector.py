@@ -5,6 +5,7 @@ import os.path;
 #Change sys.path directory
 sys.path.insert(0, os.path.abspath(os.path.join(os.pardir,"lib")));
 from Time import Time;
+import time;
 from datetime import datetime, timedelta
 
 import os.path;
@@ -15,7 +16,6 @@ from SimplivityCluster import SimplivityCluster;
 #from NimbleArray import NimbleArray;
 #---------------------------------------------------------------------
 #
-time = Time.GetInstance();
 
 llCluster = SimplivityCluster("172.30.5.33", "administrator@vsphere.local", "P@ssw0rd");
 llCluster.Initialize();
@@ -25,6 +25,12 @@ yesterweek = datetime.now() - timedelta(days=7)
 llCluster.BackUpsSummaryAll();
 llCluster.BackUpsSummaryFrom(yesterweek);
 
+
+local = datetime.now();
+glob = datetime.utcnow();
+
+
+print(local - glob);
 #llCluster.PrintHostsAll();
 
 print(Time.GetInstance().UTCToISO(yesterweek));

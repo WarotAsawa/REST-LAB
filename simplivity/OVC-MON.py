@@ -41,6 +41,8 @@ reloginInterval = 1800;
 widthPage = '94vw';
 marginPage = '3vw';
 
+timeOffset = datetime.now() - datetime.utcnow();
+
 def UpdateAllInventory():
     global ovcIP, hostsList, clustersList, backupList,vmList;
     if ovcIP =="NA":
@@ -339,7 +341,7 @@ def GetBackupHistogramData():
     return resultList;
 
 def GetBackupHeatMapData():
-    global ovcIP, backupList;
+    global ovcIP, backupList, timeOffset;
 
     today = datetime.now();
     today = today.replace(hour=0, minute=0, second=0, microsecond=0);
@@ -352,6 +354,7 @@ def GetBackupHeatMapData():
     for backup in backupList:
         endTime = backup['created_at'];
         endDate = DateParser.parse(endTime, ignoretz = True);
+        endDate = endDate + timeOffset;
         endDate = endDate.replace(hour=0, minute=0, second=0, microsecond=0);
         dayDiff = (endDate - targetMonday).days;
         #print(dayDiff)
@@ -660,7 +663,7 @@ def UpdateBackupHeatMap():
     heat = GetBackupHeatMapData();
     totalDay = len(heat)-1;
     #print(heat)
-    weekDay = ["Sun","M","T","W","Th","F","Sa"];
+    weekDay = ["M","T","W","Th","F","Sa","Sun"];
     xLabel = [];
     dayList = [];
     weekdays_in_year = [];
@@ -744,8 +747,7 @@ def UpdateBackupHeatMap():
     fig = go.Figure(data=data, layout=layout);
 
     return fig;
-
-    
+   
 def UniversalUpdate():
     global ovcIP, nodeList, clustersList;
     outputList = [];
@@ -1030,7 +1032,7 @@ loginPage = DrawLoginPage();
 header = DrawHeader();
 capacityReport = DrawCapacityReport();
 backupReport = DrawBackupReport();
-dashboard = html.Div(style={'bgcolor':'rgb(30,30,30)'},children = [loginPage,header,capacityReport, backupReport]);
+dashboard = html.Div(className = 'bg-light',style={'bgcolor':'rgb(30,30,30)'},children = [loginPage,header,capacityReport, backupReport]);
 app.layout = dashboard;
 
 
