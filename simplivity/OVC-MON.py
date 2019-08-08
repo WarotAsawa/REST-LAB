@@ -48,9 +48,16 @@ def UpdateAllInventory():
     if ovcIP =="NA":
         return;
 
-    clustersList = llCluster.GetClustersAll();
-    hostsList = llCluster.GetHostsAll();
-    vmList = llCluster.GetVMsAll();
+    cl = llCluster.GetClustersAll();
+    hl = llCluster.GetHostsAll();
+    vl = llCluster.GetVMsAll();
+    if vl != {}:
+        vmList = vl;
+    if hl != {}:
+        hostsList = hl;
+    if cl != {}:
+        clustersList = cl;  
+
     print("=====ALL INVENTORY UPDATED=====");
 
 def UpdateAllBackup():
@@ -58,7 +65,9 @@ def UpdateAllBackup():
     if ovcIP =="NA":
         return;
 
-    backupList = llCluster.GetBackUpsAll();
+    bl = llCluster.GetBackUpsAll();
+    if bl != {}:
+        backupList = bl;
     print("=====ALL BACKUP UPDATED=====");
 
 def AddGraph(id):
@@ -639,7 +648,7 @@ def UpdateBackupHistogram():
     retentionList = [];
     countList = [];
     for key in retentionData.keys():
-        retentionList.append(key);
+        retentionList.append(str(key) + " ");
         countList.append(retentionData[key]);
         totalCap = retentionData[key];
         nameCount = nameCount + 1;
