@@ -17,23 +17,24 @@ from SimplivityCluster import SimplivityCluster;
 #---------------------------------------------------------------------
 #
 
-llCluster = SimplivityCluster("172.30.5.33", "administrator@vsphere.local", "P@ssw0rd");
+llCluster = SimplivityCluster("172.30.6.36", "administrator@vsphere.local", "P@ssw0rd");
 llCluster.Initialize();
 yesterday = datetime.now() - timedelta(days=1)
 yesterweek = datetime.now() - timedelta(days=7)
 
-llCluster.BackUpsSummaryAll();
-llCluster.BackUpsSummaryFrom(yesterweek);
+#llCluster.BackUpsSummaryAll();
+#llCluster.BackUpsSummaryFrom(yesterweek);
+
+cluster = llCluster.GetBackUpsAll();
+print cluster[0];
+#local = datetime.now();
+#glob = datetime.utcnow();
 
 
-local = datetime.now();
-glob = datetime.utcnow();
-
-
-print(local - glob);
+#print(local - glob);
 #llCluster.PrintHostsAll();
 
-print(Time.GetInstance().UTCToISO(yesterweek));
+#print(Time.GetInstance().UTCToISO(yesterweek));
 #nimbleDC = NimbleArray("172.30.4.20","admin","admin","../nimble/cert/nimble-dc.cer");
 #nimbleDC.Initialize();
 #print(nimbleDC.name)
