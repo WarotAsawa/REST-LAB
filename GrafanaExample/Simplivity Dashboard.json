@@ -352,7 +352,8 @@
           "fill": true,
           "line": true,
           "op": "lt",
-          "value": 0.000001
+          "value": 0.000001,
+          "yaxis": "left"
         }
       ],
       "timeFrom": null,
@@ -380,7 +381,7 @@
           "label": "TiB",
           "logBase": 1,
           "max": null,
-          "min": null,
+          "min": "0",
           "show": true
         },
         {
@@ -698,7 +699,7 @@
           "label": "TiB",
           "logBase": 1,
           "max": null,
-          "min": null,
+          "min": "0",
           "show": true
         },
         {
@@ -828,7 +829,7 @@
           "label": "TiB",
           "logBase": 1,
           "max": null,
-          "min": null,
+          "min": "0",
           "show": true
         },
         {
@@ -958,7 +959,7 @@
           "label": "TiB",
           "logBase": 1,
           "max": null,
-          "min": null,
+          "min": "0",
           "show": true
         },
         {
@@ -998,6 +999,7 @@
       "id": 13,
       "interval": "1m",
       "legend": {
+        "alignAsTable": false,
         "avg": false,
         "current": true,
         "max": false,
@@ -1088,7 +1090,7 @@
           "label": "TiB",
           "logBase": 1,
           "max": null,
-          "min": null,
+          "min": "0",
           "show": true
         },
         {
@@ -1134,5 +1136,5 @@
   "timezone": "",
   "title": "Simplivity Dashboard",
   "uid": "_xrrrJfWk",
-  "version": 44
+  "version": 49
 }
