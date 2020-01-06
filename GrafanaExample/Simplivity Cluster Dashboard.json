@@ -1,0 +1,702 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": 3,
+  "iteration": 1578283308957,
+  "links": [],
+  "panels": [
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorPostfix": false,
+      "colorPrefix": false,
+      "colorValue": true,
+      "colors": [
+        "#01a982",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
+      "datasource": "SimplivitySource",
+      "decimals": null,
+      "format": "percent",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "id": 5,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "options": {},
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(1, 169, 130, 0.12)",
+        "full": false,
+        "lineColor": "rgba(1, 169, 130, 0.85)",
+        "show": true,
+        "ymax": null,
+        "ymin": 0
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "alias": "Storage Utilization",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "simplivityCluster",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"usedCapacity\") * 100 / (last(\"usedCapacity\") + last(\"freeCapacity\")) AS storageUtizaition FROM \"simplivityCluster\" WHERE (\"hostname\" = '$clusterName') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "usedCapacity"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "hostname",
+              "operator": "=",
+              "value": "DC-Cluster01"
+            }
+          ]
+        }
+      ],
+      "thresholds": "75,90",
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "'$clusterName' Physical Capacity Utilization",
+      "transparent": true,
+      "type": "singlestat",
+      "valueFontSize": "100%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "current"
+    },
+    {
+      "datasource": "SimplivitySource",
+      "gridPos": {
+        "h": 8,
+        "w": 7,
+        "x": 13,
+        "y": 0
+      },
+      "id": 7,
+      "interval": "1m",
+      "options": {
+        "fieldOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "defaults": {
+            "mappings": [],
+            "max": 111,
+            "min": 0,
+            "thresholds": [
+              {
+                "color": "rgba(1, 169, 130, 0.39)",
+                "value": null
+              },
+              {
+                "color": "rgba(1, 169, 130, 0.7)",
+                "value": 10
+              },
+              {
+                "color": "#01a982",
+                "value": 50
+              },
+              {
+                "color": "#6ED0E0",
+                "value": 100
+              }
+            ],
+            "title": ""
+          },
+          "override": {},
+          "values": false
+        },
+        "orientation": "auto",
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "pluginVersion": "6.5.2",
+      "targets": [
+        {
+          "alias": "$col",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "simplivityCluster",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "reductRatio"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              },
+              {
+                "params": [
+                  "Reduction Ratio"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "hostname",
+              "operator": "=~",
+              "value": "/^$clusterName$/"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "$clusterName Data reduction Ratio",
+      "transparent": true,
+      "type": "gauge"
+    },
+    {
+      "datasource": "SimplivitySource",
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 20,
+        "y": 0
+      },
+      "id": 8,
+      "interval": "1m",
+      "options": {
+        "fieldOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "defaults": {
+            "mappings": [],
+            "max": 111,
+            "min": 0,
+            "thresholds": [
+              {
+                "color": "rgba(118, 48, 234, 0.32)",
+                "value": null
+              },
+              {
+                "color": "rgba(118, 48, 234, 0.57)",
+                "value": 10
+              },
+              {
+                "color": "#7630ea",
+                "value": 50
+              },
+              {
+                "color": "rgb(96, 0, 255)",
+                "value": 100
+              }
+            ],
+            "title": ""
+          },
+          "override": {},
+          "values": false
+        },
+        "orientation": "auto",
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "pluginVersion": "6.5.2",
+      "targets": [
+        {
+          "alias": "$col",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "simplivityCluster",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "dedupeRatio"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              },
+              {
+                "params": [
+                  "Reduction Ratio"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "hostname",
+              "operator": "=~",
+              "value": "/^$clusterName$/"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "$clusterName Data dedupe Ratio",
+      "transparent": true,
+      "type": "gauge"
+    },
+    {
+      "aliasColors": {
+        "Local Backup": "#c140ff",
+        "Remote Backup": "#ff8300",
+        "VM Data": "#01a982"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "SimplivitySource",
+      "description": "Cluster Logical Capacity",
+      "fill": 3,
+      "fillGradient": 3,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 4
+      },
+      "hiddenSeries": false,
+      "id": 2,
+      "interval": "1m",
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 2,
+      "nullPointMode": "connected",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": true,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "$col",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "simplivityCluster",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"vmData\") AS \"VM Data\", \"localBackup\" AS \"Local Backup\", \"remoteBackup\" AS \"Remote Backup\" FROM \"simplivityCluster\" WHERE (\"hostname\" = '$clusterName') AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "vmData"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              },
+              {
+                "params": [
+                  "VM Data"
+                ],
+                "type": "alias"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "localBackup"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [
+                  "Local Backup"
+                ],
+                "type": "alias"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "remoteBackup"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [
+                  "Remote Backup"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "hostname",
+              "operator": "=",
+              "value": "DC-Cluster01"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "$clusterName Logical Capacity",
+      "tooltip": {
+        "shared": true,
+        "sort": 1,
+        "value_type": "individual"
+      },
+      "transparent": true,
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "decimals": 0,
+          "format": "short",
+          "label": "TiB",
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "decimals": 0,
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "datasource": "SimplivitySource",
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 20,
+        "y": 4
+      },
+      "id": 9,
+      "interval": "1m",
+      "options": {
+        "fieldOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "defaults": {
+            "mappings": [],
+            "max": 111,
+            "min": 0,
+            "thresholds": [
+              {
+                "color": "rgba(255, 131, 0, 0.33)",
+                "value": null
+              },
+              {
+                "color": "rgba(255, 131, 0, 0.72)",
+                "value": 10
+              },
+              {
+                "color": "#ff8300",
+                "value": 50
+              },
+              {
+                "color": "rgb(250, 255, 0)",
+                "value": 100
+              }
+            ],
+            "title": ""
+          },
+          "override": {},
+          "values": false
+        },
+        "orientation": "auto",
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "pluginVersion": "6.5.2",
+      "targets": [
+        {
+          "alias": "$col",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "simplivityCluster",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "compressRatio"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              },
+              {
+                "params": [
+                  "Reduction Ratio"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "hostname",
+              "operator": "=~",
+              "value": "/^$clusterName$/"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "$clusterName Data CompressionRatio",
+      "transparent": true,
+      "type": "gauge"
+    }
+  ],
+  "refresh": false,
+  "schemaVersion": 21,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "allValue": null,
+        "current": {
+          "tags": [],
+          "text": "DC-Cluster01",
+          "value": "DC-Cluster01"
+        },
+        "datasource": "SimplivitySource",
+        "definition": "select \"name\" from \"simplivityCluster\"",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Select Cluster Name",
+        "multi": false,
+        "name": "clusterName",
+        "options": [
+          {
+            "selected": false,
+            "text": "DC-Cluster01",
+            "value": "DC-Cluster01"
+          },
+          {
+            "selected": true,
+            "text": "DR-Cluster",
+            "value": "DR-Cluster"
+          }
+        ],
+        "query": "select \"name\" from \"simplivityCluster\"",
+        "refresh": 0,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      }
+    ]
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
+  },
+  "timezone": "",
+  "title": "Simplivity Cluster Dashboard",
+  "uid": "DQ2CYBBWz",
+  "version": 9
+}
