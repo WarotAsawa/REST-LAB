@@ -1,0 +1,68 @@
+{
+	"hostList" : [
+	{
+		"hostname": "172.30.5.51",
+		"description": "Simplivity VC"
+	},	
+	{
+		"hostname": "172.30.4.1",
+		"description": "SO-VSA-DC"
+	},
+	{
+		"hostname": "172.30.4.2",
+		"description": "SO-VSA-DR"
+	},
+	{
+		"hostname": "172.30.4.3",
+		"description": "SO-NanJu"
+	},
+	{
+		"hostname": "172.30.12.22",
+		"description": "Lnwza VC"
+	},
+	{
+		"hostname": "172.30.12.21",
+		"description": "Lnwza ESXi"
+	},
+	{
+		"hostname": "172.30.12.100",
+		"description": "IRONMAN Nimble"
+	},
+	{
+		"hostname": "172.30.101.250",
+		"description": "AI-Benchmark Host"
+	},
+	{
+		"hostname": "172.30.4.6",
+		"description": "Gotham RMC"
+	},
+	{
+		"hostname": "172.30.5.20",
+		"description": "Grafana Docker"
+	},
+	{
+		"hostname": "172.30.4.100",
+		"description": "SSMC 3.6 for Primera"
+	},
+	{
+		"hostname": "172.30.4.101",
+		"description": "Primera A630"
+	},
+	{
+		"hostname": "172.30.5.21",
+		"description": "Influx DB"
+	},
+	{
+		"hostname": "172.30.4.29",
+		"description": "Naboo DC Jump"
+	},
+	{
+		"hostname": "172.30.4.39",
+		"description": "Naboo DR Jump"
+	},
+	{
+		"hostname": "172.30.12.96",
+		"description": "VMNan 007 Jump"
+	}
+]
+}
