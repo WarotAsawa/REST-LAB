@@ -1,0 +1,353 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": 6,
+  "links": [],
+  "panels": [
+    {
+      "cacheTimeout": null,
+      "datasource": "Host Uptime",
+      "description": "List all status of HPE LAB",
+      "gridPos": {
+        "h": 15,
+        "w": 14,
+        "x": 0,
+        "y": 0
+      },
+      "id": 2,
+      "links": [],
+      "options": {
+        "displayMode": "gradient",
+        "fieldOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [
+              {
+                "id": 0,
+                "op": "=",
+                "text": "UP",
+                "type": 1,
+                "value": "100"
+              },
+              {
+                "from": "0",
+                "id": 1,
+                "operator": "",
+                "text": "DOWN",
+                "to": "99",
+                "type": 2,
+                "value": ""
+              },
+              {
+                "from": "",
+                "id": 2,
+                "operator": "",
+                "text": "DOWN",
+                "to": "",
+                "type": 1,
+                "value": "NULL"
+              }
+            ],
+            "max": 100,
+            "min": 0,
+            "nullValueMode": "connected",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "rgb(174, 16, 252)",
+                  "value": null
+                },
+                {
+                  "color": "rgb(0, 177, 133)",
+                  "value": 10
+                }
+              ]
+            },
+            "title": "",
+            "unit": "none"
+          },
+          "overrides": [],
+          "values": false
+        },
+        "orientation": "horizontal",
+        "showUnfilled": true
+      },
+      "pluginVersion": "6.6.2",
+      "targets": [
+        {
+          "alias": "$tag_description",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "description"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "status",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "uptime"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "End Points Status",
+      "transparent": true,
+      "type": "bargauge"
+    },
+    {
+      "alert": {
+        "alertRuleTags": {},
+        "conditions": [
+          {
+            "evaluator": {
+              "params": [
+                1
+              ],
+              "type": "lt"
+            },
+            "operator": {
+              "type": "and"
+            },
+            "query": {
+              "params": [
+                "A",
+                "1m",
+                "now"
+              ]
+            },
+            "reducer": {
+              "params": [],
+              "type": "last"
+            },
+            "type": "query"
+          }
+        ],
+        "executionErrorState": "keep_state",
+        "for": "2m",
+        "frequency": "1m",
+        "handler": 1,
+        "message": "There is a host down .\nPlease check fast!!",
+        "name": "End Points Status alert",
+        "noDataState": "no_data",
+        "notifications": [
+          {
+            "uid": "mi790vEZk"
+          }
+        ]
+      },
+      "aliasColors": {},
+      "bars": false,
+      "cacheTimeout": null,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "Host Uptime",
+      "description": "List all status of HPE LAB",
+      "fill": 0,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 13,
+        "w": 9,
+        "x": 14,
+        "y": 0
+      },
+      "hiddenSeries": false,
+      "id": 3,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": true,
+        "hideEmpty": false,
+        "hideZero": false,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [
+        {
+          "title": "",
+          "url": ""
+        }
+      ],
+      "nullPointMode": "connected",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pluginVersion": "6.5.2",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": true,
+      "targets": [
+        {
+          "alias": "$tag_description",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "description"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "status",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "uptime"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "thresholds": [
+        {
+          "colorMode": "critical",
+          "fill": true,
+          "line": true,
+          "op": "lt",
+          "value": 1,
+          "yaxis": "left"
+        }
+      ],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "EndPoint Status Alert",
+      "tooltip": {
+        "shared": true,
+        "sort": 1,
+        "value_type": "individual"
+      },
+      "transparent": true,
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "decimals": null,
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": "150",
+          "min": "-50",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    }
+  ],
+  "refresh": "1m",
+  "schemaVersion": 22,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Uptime Dashboard",
+  "uid": "1YocidPWk",
+  "version": 1
+}
