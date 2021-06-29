@@ -29,37 +29,37 @@ def GetVolFolList(pulledVol):
     result["allVol"][volName]["write_throughput"]            = float(volDetail['avg_stats_last_5mins']["write_throughput"])
     result["allVol"][volName]["write_latency"]               = float(volDetail['avg_stats_last_5mins']["write_latency"])
     #All data kept in GiB. Size returned as MiB. Used return as Bytes
-    if volFolder in allFolder:
-      result["allFolder"][volFolder]["vol_usage_uncompressed_GiB"]  += allVol[volName]["vol_usage_uncompressed_GiB"]  
-      result["allFolder"][volFolder]["vol_usage_compressed_GiB"]    += allVol[volName]["vol_usage_compressed_GiB"]    
-      result["allFolder"][volFolder]["snap_usage_uncompressed_GiB"] += allVol[volName]["snap_usage_uncompressed_GiB"] 
-      result["allFolder"][volFolder]["snap_usage_compressed_GiB"]   += allVol[volName]["snap_usage_compressed_GiB"]   
-      result["allFolder"][volFolder]["size_GiB"]                    += allVol[volName]["size_GiB"]                    
-      result["allFolder"][volFolder]["read_iops"]                   += allVol[volName]["read_iops"]                   
-      result["allFolder"][volFolder]["read_throughput"]             += allVol[volName]["read_throughput"]             
-      result["allFolder"][volFolder]["read_latency"]                += allVol[volName]["read_latency"]                
-      result["allFolder"][volFolder]["write_iops"]                  += allVol[volName]["write_iops"]                  
-      result["allFolder"][volFolder]["write_throughput"]            += allVol[volName]["write_throughput"]            
-      result["allFolder"][volFolder]["write_latency"]               += allVol[volName]["write_latency"]               
+    if volFolder in result["allFolder"]:
+      result["allFolder"][volFolder]["vol_usage_uncompressed_GiB"]  += result["allVol"]["vol_usage_uncompressed_GiB"]  
+      result["allFolder"][volFolder]["vol_usage_compressed_GiB"]    += result["allVol"]["vol_usage_compressed_GiB"]    
+      result["allFolder"][volFolder]["snap_usage_uncompressed_GiB"] += result["allVol"]["snap_usage_uncompressed_GiB"] 
+      result["allFolder"][volFolder]["snap_usage_compressed_GiB"]   += result["allVol"]["snap_usage_compressed_GiB"]   
+      result["allFolder"][volFolder]["size_GiB"]                    += result["allVol"]["size_GiB"]                    
+      result["allFolder"][volFolder]["read_iops"]                   += result["allVol"]["read_iops"]                   
+      result["allFolder"][volFolder]["read_throughput"]             += result["allVol"]["read_throughput"]             
+      result["allFolder"][volFolder]["read_latency"]                += result["allVol"]["read_latency"]                
+      result["allFolder"][volFolder]["write_iops"]                  += result["allVol"]["write_iops"]                  
+      result["allFolder"][volFolder]["write_throughput"]            += result["allVol"]["write_throughput"]            
+      result["allFolder"][volFolder]["write_latency"]               += result["allVol"]["write_latency"]               
     else:
       result["allFolder"][volFolder] = {}
-      result["allFolder"][volFolder]["vol_usage_uncompressed_GiB"]  = allVol[volName]["vol_usage_uncompressed_GiB"]  
-      result["allFolder"][volFolder]["vol_usage_compressed_GiB"]    = allVol[volName]["vol_usage_compressed_GiB"]    
-      result["allFolder"][volFolder]["snap_usage_uncompressed_GiB"] = allVol[volName]["snap_usage_uncompressed_GiB"] 
-      result["allFolder"][volFolder]["snap_usage_compressed_GiB"]   = allVol[volName]["snap_usage_compressed_GiB"]   
-      result["allFolder"][volFolder]["size_GiB"]                    = allVol[volName]["size_GiB"]                    
-      result["allFolder"][volFolder]["read_iops"]                   = allVol[volName]["read_iops"]                   
-      result["allFolder"][volFolder]["read_throughput"]             = allVol[volName]["read_throughput"]             
-      result["allFolder"][volFolder]["read_latency"]                = allVol[volName]["read_latency"]                
-      result["allFolder"][volFolder]["write_iops"]                  = allVol[volName]["write_iops"]                  
-      result["allFolder"][volFolder]["write_throughput"]            = allVol[volName]["write_throughput"]            
-      result["allFolder"][volFolder]["write_latency"]               = allVol[volName]["write_latency"]               
+      result["allFolder"][volFolder]["vol_usage_uncompressed_GiB"]  = result["allVol"]["vol_usage_uncompressed_GiB"]  
+      result["allFolder"][volFolder]["vol_usage_compressed_GiB"]    = result["allVol"]["vol_usage_compressed_GiB"]    
+      result["allFolder"][volFolder]["snap_usage_uncompressed_GiB"] = result["allVol"]["snap_usage_uncompressed_GiB"] 
+      result["allFolder"][volFolder]["snap_usage_compressed_GiB"]   = result["allVol"]["snap_usage_compressed_GiB"]   
+      result["allFolder"][volFolder]["size_GiB"]                    = result["allVol"]["size_GiB"]                    
+      result["allFolder"][volFolder]["read_iops"]                   = result["allVol"]["read_iops"]                   
+      result["allFolder"][volFolder]["read_throughput"]             = result["allVol"]["read_throughput"]             
+      result["allFolder"][volFolder]["read_latency"]                = result["allVol"]["read_latency"]                
+      result["allFolder"][volFolder]["write_iops"]                  = result["allVol"]["write_iops"]                  
+      result["allFolder"][volFolder]["write_throughput"]            = result["allVol"]["write_throughput"]            
+      result["allFolder"][volFolder]["write_latency"]               = result["allVol"]["write_latency"]               
 
   #print(allVol)
   #print(allFolder)
   return result
 
-  
+
 # You can generate a Token from the "Tokens Tab" in the UI
 token = "jmXujLPq0rE1QRIOGVxBS-9ZXtYJMeZwkhGGxrrsSFHDw_KaGe2yNYlbwrX0x5mNm-ugIduA-IS7LQMZjey47Q=="
 org = "gotham"
