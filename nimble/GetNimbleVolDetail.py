@@ -5,43 +5,6 @@ from datetime import datetime
 from influxdb_client import InfluxDBClient, Point, WritePrecision
 from influxdb_client.client.write_api import SYNCHRONOUS
 
-# You can generate a Token from the "Tokens Tab" in the UI
-token = "jmXujLPq0rE1QRIOGVxBS-9ZXtYJMeZwkhGGxrrsSFHDw_KaGe2yNYlbwrX0x5mNm-ugIduA-IS7LQMZjey47Q=="
-org = "gotham"
-bucket = "gotham-bucket"
-#Login to InfluxDB
-client = InfluxDBClient(url="http://influxdb.ezmeral.hpe.lab", token=token)
-write_api = client.write_api(write_options=SYNCHRONOUS)
-
-now = datetime.utcnow()
-
-
-#Nimble Credential
-nimbleArrays = ['172.30.4.80', '172.30.4.85']
-nimbleUsername = 'influxdbquery'
-nimblePassword = 'P@ssw0rd'
-
-for nimbleArray in nimbleArrays:
-  #Login to Nimble Array
-  nimbleClient = NimOSClient(nimbleArray, nimbleUsername, nimblePassword)
-  #Get Array Name
-  array = nimbleClient.arrays
-  arrayName = array.list()[0].attrs['name']
-  #Query all Nimble Vol's detial via API
-  pulledVol = nimbleClient.volumes.list()
-
-  result = GetVolFolList(pulledVol)
-  allVol = result["allVol"]
-  allFolder = result["allFolder"]
-  
-  for vol in allVol:
-    write_api.write(bucket, org, {"measurement": "volDetail", "tags": {"array": arrayName, "volName":vol},"fields": allVol[vol], "time": now}) 
-
-  for folder in allFolder:
-    write_api.write(bucket, org, {"measurement": "folderDetail", "tags": {"array": arrayName, "folderName":folder},"fields": allFolder[folder], "time": now})
-   
-
-
 def GetVolFolList(pulledVol):
   result = {};
   result["allVol"] = {}
@@ -95,3 +58,40 @@ def GetVolFolList(pulledVol):
   #print(allVol)
   #print(allFolder)
   return result
+
+  
+# You can generate a Token from the "Tokens Tab" in the UI
+token = "jmXujLPq0rE1QRIOGVxBS-9ZXtYJMeZwkhGGxrrsSFHDw_KaGe2yNYlbwrX0x5mNm-ugIduA-IS7LQMZjey47Q=="
+org = "gotham"
+bucket = "gotham-bucket"
+#Login to InfluxDB
+client = InfluxDBClient(url="http://influxdb.ezmeral.hpe.lab", token=token)
+write_api = client.write_api(write_options=SYNCHRONOUS)
+
+now = datetime.utcnow()
+
+
+#Nimble Credential
+nimbleArrays = ['172.30.4.80', '172.30.4.85']
+nimbleUsername = 'influxdbquery'
+nimblePassword = 'P@ssw0rd'
+
+for nimbleArray in nimbleArrays:
+  #Login to Nimble Array
+  nimbleClient = NimOSClient(nimbleArray, nimbleUsername, nimblePassword)
+  #Get Array Name
+  array = nimbleClient.arrays
+  arrayName = array.list()[0].attrs['name']
+  #Query all Nimble Vol's detial via API
+  pulledVol = nimbleClient.volumes.list()
+
+  result = GetVolFolList(pulledVol)
+  allVol = result["allVol"]
+  allFolder = result["allFolder"]
+
+  for vol in allVol:
+    write_api.write(bucket, org, {"measurement": "volDetail", "tags": {"array": arrayName, "volName":vol},"fields": allVol[vol], "time": now}) 
+
+  for folder in allFolder:
+    write_api.write(bucket, org, {"measurement": "folderDetail", "tags": {"array": arrayName, "folderName":folder},"fields": allFolder[folder], "time": now})
+   
