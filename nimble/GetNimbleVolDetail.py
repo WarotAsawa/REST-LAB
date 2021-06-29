@@ -54,6 +54,16 @@ def GetVolFolList(pulledVol):
       result["allFolder"][volFolder]["write_iops"]                  = result["allVol"][volName]["write_iops"]                  
       result["allFolder"][volFolder]["write_throughput"]            = result["allVol"][volName]["write_throughput"]            
       result["allFolder"][volFolder]["write_latency"]               = result["allVol"][volName]["write_latency"]               
+   
+    if result["allVol"][volName]["read_iops"] == 0:
+      result["allVol"][volName]["read_size"] = 0.0;
+    else:
+      result["allVol"][volName]["read_size"] = result["allVol"][volName]["read_throughput"]/result["allVol"][volName]["read_iops"]*1.0;
+   
+    if result["allVol"][volName]["write_iops"] == 0:
+      result["allVol"][volName]["write_size"] = 0.0;
+    else:
+      result["allVol"][volName]["write_size"] = result["allVol"][volName]["write_throughput"]/result["allVol"][volName]["write_iops"]*1.0;
 
   #print(allVol)
   #print(allFolder)
@@ -61,9 +71,10 @@ def GetVolFolList(pulledVol):
 
 
 # You can generate a Token from the "Tokens Tab" in the UI
-token = "jmXujLPq0rE1QRIOGVxBS-9ZXtYJMeZwkhGGxrrsSFHDw_KaGe2yNYlbwrX0x5mNm-ugIduA-IS7LQMZjey47Q=="
+token = "k5OWtlTXhtP2PRFBL2FucI5nyVXSxEJIQKsYnJ7klCXAlRojq6QoIto1uy2QstvBwFWBXyTcx7a-XrzB0k3mQw=="
 org = "gotham"
 bucket = "gotham-bucket"
+
 #Login to InfluxDB
 client = InfluxDBClient(url="http://influxdb.ezmeral.hpe.lab", token=token)
 write_api = client.write_api(write_options=SYNCHRONOUS)
@@ -75,20 +86,24 @@ now = datetime.utcnow()
 nimbleArrays = ['172.30.4.80', '172.30.4.85']
 nimbleUsername = 'influxdbquery'
 nimblePassword = 'P@ssw0rd'
-
+arrayIndex = 0;
 for nimbleArray in nimbleArrays:
   #Login to Nimble Array
   nimbleClient = NimOSClient(nimbleArray, nimbleUsername, nimblePassword)
-  #Get Array Name
+  #Get Array Name and put into db
   array = nimbleClient.arrays
   arrayName = array.list()[0].attrs['name']
+  write_api.write(bucket, org, {"measurement": "arryName", "fields": {"name": arrayName}, "time": datetime.utcfromtimestamp(arrayIndex)})
+  print(datetime.utcfromtimestamp(arrayIndex))
+  arrayIndex += 1
   #Query all Nimble Vol's detial via API
   pulledVol = nimbleClient.volumes.list()
 
   result = GetVolFolList(pulledVol)
   allVol = result["allVol"]
   allFolder = result["allFolder"]
-
+  #print(allVol)
+  #print(allFolder)
   for vol in allVol:
     write_api.write(bucket, org, {"measurement": "volDetail", "tags": {"array": arrayName, "volName":vol},"fields": allVol[vol], "time": now}) 
 
