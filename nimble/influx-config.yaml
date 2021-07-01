@@ -1,0 +1,2765 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: bettering-chebyshev-552007
+spec:
+    color: '#be2ee4'
+    description: Stacked to shows cumulative values
+    name: Stacked
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: charming-jang-552001
+spec:
+    color: '#67d74e'
+    description: Analytics Dashboard
+    name: Analytics
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: spectacular-jones-552005
+spec:
+    color: '#BF3D5E'
+    description: Show historical Performance
+    name: Performance
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: stupefied-elgamal-552003
+spec:
+    color: '#00a3ff'
+    description: Show historical capacity
+    name: Capacity
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Bucket
+metadata:
+    name: hopeful-swanson-552009
+spec:
+    name: gotham-bucket
+---
+apiVersion: influxdata.com/v2alpha1
+kind: CheckDeadman
+metadata:
+    name: eerie-hypatia-55200b
+spec:
+    every: 1m0s
+    level: CRIT
+    name: Array Dead Check
+    query: |-
+        from(bucket: "gotham-bucket")
+          |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+          |> filter(fn: (r) => r["_measurement"] == "volDetail")
+          |> filter(fn: (r) => r["_field"] == "size_GiB")
+    staleTime: 30m0s
+    status: active
+    statusMessageTemplate: |-
+        Check: ${ r._check_name } is: ${ r._level }
+        The Array is Dead
+    timeSince: 5m0s
+---
+apiVersion: influxdata.com/v2alpha1
+kind: CheckThreshold
+metadata:
+    name: inspiring-pasteur-952003
+spec:
+    every: 1h0m0s
+    name: Test Alert
+    offset: 5m0s
+    query: |-
+        from(bucket: "gotham-bucket")
+          |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+          |> filter(fn: (r) => r["_measurement"] == "volDetail")
+          |> filter(fn: (r) => r["_field"] == "read_iops")
+          |> filter(fn: (r) => r["volName"] == "EZMERAL-C52")
+          |> aggregateWindow(every: 1m, fn: mean, createEmpty: false)
+          |> yield(name: "mean")
+    status: active
+    statusMessageTemplate: Test alert
+    thresholds:
+      - level: CRIT
+        type: greater
+        value: 30
+---
+apiVersion: influxdata.com/v2alpha1
+kind: CheckThreshold
+metadata:
+    name: nervous-jepsen-952001
+spec:
+    every: 1m0s
+    name: Read IOPs Alert
+    query: |-
+        from(bucket: "gotham-bucket")
+          |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+          |> filter(fn: (r) => r["_measurement"] == "volDetail")
+          |> filter(fn: (r) => r["_field"] == "read_iops")
+          |> aggregateWindow(every: 1m, fn: mean, createEmpty: false)
+          |> yield(name: "mean")
+    status: active
+    statusMessageTemplate: 'Check: ${ r._check_name } is: ${ r._level }'
+    thresholds:
+      - level: WARN
+        type: greater
+        value: 5000
+      - level: CRIT
+        type: greater
+        value: 10000
+      - level: OK
+        type: lesser
+        value: 1000
+      - level: INFO
+        type: greater
+        value: 1000
+---
+apiVersion: influxdata.com/v2alpha1
+kind: CheckThreshold
+metadata:
+    name: practical-torvalds-952005
+spec:
+    every: 1m0s
+    name: 'Write IOPs Alert '
+    query: |-
+        from(bucket: "gotham-bucket")
+          |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+          |> filter(fn: (r) => r["_measurement"] == "volDetail")
+          |> filter(fn: (r) => r["_field"] == "write_iops")
+          |> aggregateWindow(every: 1m, fn: max, createEmpty: false)
+          |> yield(name: "max")
+    status: active
+    statusMessageTemplate: 'Check: ${ r._check_name } is: ${ r._level }'
+    thresholds:
+      - level: WARN
+        type: greater
+        value: 5000
+      - level: INFO
+        type: greater
+        value: 1005
+      - level: CRIT
+        type: greater
+        value: 10000
+---
+apiVersion: influxdata.com/v2alpha1
+kind: NotificationEndpointSlack
+metadata:
+    name: reverent-nash-952007
+spec:
+    name: HPE Notify
+    status: active
+    url: https://hooks.slack.com/services/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
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: shiny-lalande-952009
+spec:
+    language: flux
+    name: ArrayName
+    query: "from(bucket: \"gotham-bucket\")\r\n  |> range(start: 1970-01-01, stop:
+        1970-01-02)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"arryName\")\r\n
+        \ |> filter(fn: (r) => r[\"_field\"] == \"name\")\r\n  |> sort()\r\n  |> yield(name:
+        \"_value\")"
+    selected:
+      - GOTHAM-AF20-ARRAY
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: toasty-merkle-95200b
+spec:
+    language: flux
+    name: bucket
+    query: |-
+        buckets()
+          |> filter(fn: (r) => r.name !~ /^_/)
+          |> rename(columns: {name: "_value"})
+          |> keep(columns: ["_value"])
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: earning-ganguly-552001
+spec:
+    associations:
+      - kind: Label
+        name: spectacular-jones-552005
+    charts:
+      - height: 2
+        kind: Markdown
+        name: Name this Cell
+        note: "![# HPE Nimble Storage](https://nimble-af20.gotham.hpe.lab/nmbl-components/images/oem/OEM_HPE_logo_sm.png)\r\n####
+            Volume Performance Comparison"
+        width: 6
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '#### Read IOs (IOPs/Throughput/Latency)'
+        width: 6
+        yPos: 2
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: Read IOPs
+            name: "y"
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: 08c28463-33e5-48c5-b3f1-de5b70795cd8
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 06cd8371-bb66-47d5-bbe2-6f47e7b241c8
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 7944160a-67f1-4f78-821c-e0d370549011
+            name: Nineteen Eighty Four
+            type: scale
+        geom: monotoneX
+        height: 2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 0.63
+        name: Nimble Volume's Read IOPs
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "gotham-bucket")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "volDetail")
+                  |> filter(fn: (r) => r["array"] == v.ArrayName)
+                  |> filter(fn: (r) => r["_field"] == "read_iops")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "max")
+        width: 6
+        xCol: _time
+        yCol: _value
+        yPos: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: Read Throughput
+            name: "y"
+            scale: linear
+            suffix: Bps
+        colors:
+          - hex: '#31C0F6'
+            id: 08c28463-33e5-48c5-b3f1-de5b70795cd8
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 06cd8371-bb66-47d5-bbe2-6f47e7b241c8
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 7944160a-67f1-4f78-821c-e0d370549011
+            name: Nineteen Eighty Four
+            type: scale
+        geom: monotoneX
+        height: 2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 0.63
+        name: Nimble Volume's Read Throughput
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "gotham-bucket")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "volDetail")
+                  |> filter(fn: (r) => r["array"] == v.ArrayName)
+                  |> filter(fn: (r) => r["_field"] == "read_throughput")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "max")
+        width: 6
+        xCol: _time
+        yCol: _value
+        yPos: 5
+        yTotalTicks: 20
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - label: Read Latency
+            name: "y"
+            scale: linear
+            suffix: s
+        colors:
+          - hex: '#31C0F6'
+            id: e1ab9c58-272b-4402-afe7-ab40350a2317
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 8a057fdc-451a-4128-83c3-499770f07841
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: ff68b42b-62fa-4e75-a598-6e8b77d0d21b
+            name: Nineteen Eighty Four
+            type: scale
+        geom: monotoneX
+        height: 2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 0.63
+        name: Nimble Volume's Read Latency
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "gotham-bucket")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "volDetail")
+                  |> filter(fn: (r) => r["array"] == v.ArrayName)
+                  |> filter(fn: (r) => r["_field"] == "read_latency")
+                  |> map(fn: (r) => ({ r with _value: r._value / 1000000.0 }))
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "max")
+        width: 6
+        xCol: _time
+        yCol: _value
+        yPos: 7
+        yTotalTicks: 20
+      - height: 2
+        kind: Markdown
+        name: Name this Cell
+        note: "These graph show each volume'show\r\n- Read/Wrte IOPs\r\n- Read/Write
+            Throughput\r\n- Read/Write Latency \r\n"
+        width: 6
+        xPos: 6
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '#### Write IOs (IOPs/Throughput/Latency)'
+        width: 6
+        xPos: 6
+        yPos: 2
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: Write IOPs
+            name: "y"
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: 08c28463-33e5-48c5-b3f1-de5b70795cd8
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 06cd8371-bb66-47d5-bbe2-6f47e7b241c8
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 7944160a-67f1-4f78-821c-e0d370549011
+            name: Nineteen Eighty Four
+            type: scale
+        geom: monotoneX
+        height: 2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 0.63
+        name: Nimble Volume's Write IOPs
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "gotham-bucket")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "volDetail")
+                  |> filter(fn: (r) => r["array"] == v.ArrayName)
+                  |> filter(fn: (r) => r["_field"] == "write_iops")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "max")
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: Write Throughput
+            name: "y"
+            scale: linear
+            suffix: Bps
+        colors:
+          - hex: '#31C0F6'
+            id: 08c28463-33e5-48c5-b3f1-de5b70795cd8
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 06cd8371-bb66-47d5-bbe2-6f47e7b241c8
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 7944160a-67f1-4f78-821c-e0d370549011
+            name: Nineteen Eighty Four
+            type: scale
+        geom: monotoneX
+        height: 2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 0.63
+        name: Nimble Volume's Write Throughput
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "gotham-bucket")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "volDetail")
+                  |> filter(fn: (r) => r["array"] == v.ArrayName)
+                  |> filter(fn: (r) => r["_field"] == "write_throughput")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "max")
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 5
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - label: Write Latency
+            name: "y"
+            scale: linear
+            suffix: s
+        colors:
+          - hex: '#31C0F6'
+            id: 08c28463-33e5-48c5-b3f1-de5b70795cd8
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 06cd8371-bb66-47d5-bbe2-6f47e7b241c8
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 7944160a-67f1-4f78-821c-e0d370549011
+            name: Nineteen Eighty Four
+            type: scale
+        geom: monotoneX
+        height: 2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 0.63
+        name: Nimble Volume's Write Latency (Clone)
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "gotham-bucket")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "volDetail")
+                  |> filter(fn: (r) => r["array"] == v.ArrayName)
+                  |> filter(fn: (r) => r["_field"] == "write_latency")
+                  |> map(fn: (r) => ({ r with _value: r._value / 1000000.0 }))
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "max")
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 7
+        yTotalTicks: 20
+    description: Nimble Performance historical graph per Volume
+    name: Nimble Volume Performance
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: exciting-engelbart-d52001
+spec:
+    associations:
+      - kind: Label
+        name: bettering-chebyshev-552007
+      - kind: Label
+        name: spectacular-jones-552005
+    charts:
+      - height: 2
+        kind: Markdown
+        name: Name this Cell
+        note: "![# HPE Nimble Storage](https://nimble-af20.gotham.hpe.lab/nmbl-components/images/oem/OEM_HPE_logo_sm.png)\r\n####
+            Volume Performance Stacked"
+        width: 6
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '#### Stacked Read IOs (IOPs/Throughput/Latency)'
+        width: 6
+        yPos: 2
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: e1ab9c58-272b-4402-afe7-ab40350a2317
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 8a057fdc-451a-4128-83c3-499770f07841
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: ff68b42b-62fa-4e75-a598-6e8b77d0d21b
+            name: Nineteen Eighty Four
+            type: scale
+        geom: monotoneX
+        height: 2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Nimble Volume's Read IOPs
+        position: stacked
+        queries:
+          - query: |-
+                from(bucket: "gotham-bucket")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "volDetail")
+                  |> filter(fn: (r) => r["array"] == v.ArrayName)
+                  |> filter(fn: (r) => r["_field"] == "read_iops")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "max")
+        width: 6
+        xCol: _time
+        yCol: _value
+        yPos: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: Read Throughput
+            name: "y"
+            scale: linear
+            suffix: Bps
+        colors:
+          - hex: '#31C0F6'
+            id: 08c28463-33e5-48c5-b3f1-de5b70795cd8
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 06cd8371-bb66-47d5-bbe2-6f47e7b241c8
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 7944160a-67f1-4f78-821c-e0d370549011
+            name: Nineteen Eighty Four
+            type: scale
+        geom: monotoneX
+        height: 2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 0.63
+        name: Nimble Volume's Read Throughput
+        position: stacked
+        queries:
+          - query: |-
+                from(bucket: "gotham-bucket")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "volDetail")
+                  |> filter(fn: (r) => r["array"] == v.ArrayName)
+                  |> filter(fn: (r) => r["_field"] == "read_throughput")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "max")
+        width: 6
+        xCol: _time
+        yCol: _value
+        yPos: 5
+        yTotalTicks: 20
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - label: Read Latency
+            name: "y"
+            scale: linear
+            suffix: s
+        colors:
+          - hex: '#31C0F6'
+            id: e1ab9c58-272b-4402-afe7-ab40350a2317
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 8a057fdc-451a-4128-83c3-499770f07841
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: ff68b42b-62fa-4e75-a598-6e8b77d0d21b
+            name: Nineteen Eighty Four
+            type: scale
+        geom: monotoneX
+        height: 2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 0.63
+        name: Nimble Volume's Read Latency
+        position: stacked
+        queries:
+          - query: |-
+                from(bucket: "gotham-bucket")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "volDetail")
+                  |> filter(fn: (r) => r["array"] == v.ArrayName)
+                  |> filter(fn: (r) => r["_field"] == "read_latency")
+                  |> map(fn: (r) => ({ r with _value: r._value / 1000000.0 }))
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "max")
+        width: 6
+        xCol: _time
+        yCol: _value
+        yPos: 7
+        yTotalTicks: 20
+      - height: 2
+        kind: Markdown
+        name: Name this Cell
+        note: "These graph show each volume's to show overall telemetry\r\n- Read/Wrte
+            IOPs\r\n- Read/Write Throughput\r\n- Read/Write Latency \r\n"
+        width: 6
+        xPos: 6
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '#### Stacked Write IOs (IOPs/Throughput/Latency)'
+        width: 6
+        xPos: 6
+        yPos: 2
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: Write IOPs
+            name: "y"
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: 08c28463-33e5-48c5-b3f1-de5b70795cd8
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 06cd8371-bb66-47d5-bbe2-6f47e7b241c8
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 7944160a-67f1-4f78-821c-e0d370549011
+            name: Nineteen Eighty Four
+            type: scale
+        geom: monotoneX
+        height: 2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 0.63
+        name: Nimble Volume's Write IOPs
+        position: stacked
+        queries:
+          - query: |-
+                from(bucket: "gotham-bucket")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "volDetail")
+                  |> filter(fn: (r) => r["array"] == v.ArrayName)
+                  |> filter(fn: (r) => r["_field"] == "write_iops")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "max")
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: Write Throughput
+            name: "y"
+            scale: linear
+            suffix: Bps
+        colors:
+          - hex: '#31C0F6'
+            id: 08c28463-33e5-48c5-b3f1-de5b70795cd8
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 06cd8371-bb66-47d5-bbe2-6f47e7b241c8
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 7944160a-67f1-4f78-821c-e0d370549011
+            name: Nineteen Eighty Four
+            type: scale
+        geom: monotoneX
+        height: 2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 0.63
+        name: Nimble Volume's Write Throughput
+        position: stacked
+        queries:
+          - query: |-
+                from(bucket: "gotham-bucket")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "volDetail")
+                  |> filter(fn: (r) => r["array"] == v.ArrayName)
+                  |> filter(fn: (r) => r["_field"] == "write_throughput")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "max")
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 5
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - label: Write Latency
+            name: "y"
+            scale: linear
+            suffix: s
+        colors:
+          - hex: '#31C0F6'
+            id: 08c28463-33e5-48c5-b3f1-de5b70795cd8
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 06cd8371-bb66-47d5-bbe2-6f47e7b241c8
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 7944160a-67f1-4f78-821c-e0d370549011
+            name: Nineteen Eighty Four
+            type: scale
+        geom: monotoneX
+        height: 2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 0.63
+        name: Nimble Volume's Write Latency
+        position: stacked
+        queries:
+          - query: |-
+                from(bucket: "gotham-bucket")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "volDetail")
+                  |> filter(fn: (r) => r["array"] == v.ArrayName)
+                  |> filter(fn: (r) => r["_field"] == "write_latency")
+                  |> map(fn: (r) => ({ r with _value: r._value / 1000000.0 }))
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "max")
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 7
+        yTotalTicks: 20
+    description: Nimble Stacked Performance historical graph per Volume
+    name: Nimble Volume Performance Stacked
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: friendly-mcnulty-952001
+spec:
+    associations:
+      - kind: Label
+        name: stupefied-elgamal-552003
+    charts:
+      - height: 3
+        kind: Markdown
+        name: Name this Cell
+        note: "![# HPE Nimble Storage](https://nimble-af20.gotham.hpe.lab/nmbl-components/images/oem/OEM_HPE_logo_sm.png)\r\n####
+            Volume Capacity Comparison\r\n\r\nVolume's Data and Snapshot Size, also
+            group with folder. This dashboard will show overall capacity comparison
+            of each volume and folder."
+        width: 4
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '#### Volume''s Data Capacity'
+        width: 12
+        yPos: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: Compression Ratio
+            name: "y"
+            scale: linear
+            suffix: x
+        colors:
+          - hex: '#FD7A5D'
+            id: 3af01719-f6dd-4c61-9998-0d92fc8eaba7
+            name: Delorean
+            type: scale
+          - hex: '#5F1CF2'
+            id: f825f2a0-1a21-4afb-9601-286b389477c8
+            name: Delorean
+            type: scale
+          - hex: '#4CE09A'
+            id: 726dc66e-23cf-4f3e-83b7-11bb0aa9aea0
+            name: Delorean
+            type: scale
+        geom: monotoneX
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        name: Volume Historical Compression Ratio
+        note: "**Historical Compress Ratio**\r\n\r\nShows you the real Compression
+            Ratio of each volume. Dedupe not included"
+        noteOnEmpty: true
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "gotham-bucket")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "volDetail")
+                  |> filter(fn: (r) => r["array"] == v.ArrayName)
+                  |> filter(fn: (r) => r["_field"] == "vol_usage_uncompressed_GiB" or r["_field"] == "vol_usage_compressed_GiB")
+                  |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")
+                  |> map(fn: (r) => ({ r with _value: (r.vol_usage_uncompressed_GiB+0.01) / (r.vol_usage_compressed_GiB+0.01) }))
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        width: 4
+        xCol: _time
+        yCol: _value
+        yPos: 4
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '#### Volume''s Snapshots Capacity'
+        width: 12
+        yPos: 7
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: Compression Ratio
+            name: "y"
+            scale: linear
+            suffix: x
+        colors:
+          - hex: '#FDC44F'
+            id: 8320fee6-0320-4ede-82e1-bb61e1a7e974
+            name: Cthulhu
+            type: scale
+          - hex: '#007C76'
+            id: 2ab84974-efdf-4cda-adf9-3c320ded5dda
+            name: Cthulhu
+            type: scale
+          - hex: '#8983FF'
+            id: 206537e9-f027-417d-8ff0-6758b619db23
+            name: Cthulhu
+            type: scale
+        geom: monotoneX
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        name: 'Snap Historical Compression Ratio '
+        note: "**Historical Compress Ratio**\r\n\r\nShows you the real Compression
+            Ratio of each volume. Dedupe not included"
+        noteOnEmpty: true
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "gotham-bucket")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "volDetail")
+                  |> filter(fn: (r) => r["array"] == v.ArrayName)
+                  |> filter(fn: (r) => r["_field"] == "snap_usage_uncompressed_GiB" or r["_field"] == "snap_usage_compressed_GiB")
+                  |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")
+                  |> map(fn: (r) => ({ r with _value: (r.snap_usage_uncompressed_GiB+0.01) / (r.snap_usage_compressed_GiB+0.01) }))
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        width: 4
+        xCol: _time
+        yCol: _value
+        yPos: 8
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '#### Folder Compressed Capacity'
+        width: 8
+        xPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: Compressed Usage (GiB)
+            name: "y"
+            scale: linear
+            suffix: ' GiB'
+        colors:
+          - hex: '#8F8AF4'
+            id: 8efe7369-4ec4-4c22-87e1-b063fb47d4ae
+            name: Do Androids Dream of Electric Sheep?
+            type: scale
+          - hex: '#A51414'
+            id: bf957e2b-5fc4-4f01-81f3-2481ceaec64b
+            name: Do Androids Dream of Electric Sheep?
+            type: scale
+          - hex: '#F4CF31'
+            id: 9076bfcd-34b8-46d4-b3bb-fdbf272c273d
+            name: Do Androids Dream of Electric Sheep?
+            type: scale
+        geom: monotoneX
+        height: 2
+        hoverDimension: "y"
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        name: Folder Usage (Compressed)
+        note: "**Compressed Usage**\r\n\r\nShows you the compressed data in the Volume"
+        noteOnEmpty: true
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "gotham-bucket")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "folderDetail")
+                  |> filter(fn: (r) => r["array"] == v.ArrayName)
+                  |> filter(fn: (r) => r["_field"] == "vol_usage_compressed_GiB")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        shade: true
+        width: 4
+        xCol: _time
+        xPos: 4
+        yCol: _value
+        yPos: 1
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: UnCompressed Usage (GiB)
+            name: "y"
+            scale: linear
+            suffix: ' GiB'
+        colors:
+          - hex: '#FD7A5D'
+            id: 3af01719-f6dd-4c61-9998-0d92fc8eaba7
+            name: Delorean
+            type: scale
+          - hex: '#5F1CF2'
+            id: f825f2a0-1a21-4afb-9601-286b389477c8
+            name: Delorean
+            type: scale
+          - hex: '#4CE09A'
+            id: 726dc66e-23cf-4f3e-83b7-11bb0aa9aea0
+            name: Delorean
+            type: scale
+        geom: monotoneX
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        name: Volume Usage (UnCompressed)
+        note: "**Uncompressed Usage**\r\n\r\nShows you the real logical data in the
+            Volume"
+        noteOnEmpty: true
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "gotham-bucket")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "volDetail")
+                  |> filter(fn: (r) => r["array"] == v.ArrayName)
+                  |> filter(fn: (r) => r["_field"] == "vol_usage_uncompressed_GiB")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        width: 4
+        xCol: _time
+        xPos: 4
+        yCol: _value
+        yPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: UnCompressed Usage (GiB)
+            name: "y"
+            scale: linear
+            suffix: ' GiB'
+        colors:
+          - hex: '#FDC44F'
+            id: 8320fee6-0320-4ede-82e1-bb61e1a7e974
+            name: Cthulhu
+            type: scale
+          - hex: '#007C76'
+            id: 2ab84974-efdf-4cda-adf9-3c320ded5dda
+            name: Cthulhu
+            type: scale
+          - hex: '#8983FF'
+            id: 206537e9-f027-417d-8ff0-6758b619db23
+            name: Cthulhu
+            type: scale
+        geom: monotoneX
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        name: Snap Usage (UnCompressed)
+        note: "**Uncompressed Usage**\r\n\r\nShows you the real logical data in the
+            Volume"
+        noteOnEmpty: true
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "gotham-bucket")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "volDetail")
+                  |> filter(fn: (r) => r["array"] == v.ArrayName)
+                  |> filter(fn: (r) => r["_field"] == "snap_usage_uncompressed_GiB")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        width: 4
+        xCol: _time
+        xPos: 4
+        yCol: _value
+        yPos: 8
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: Compressed Usage (GiB)
+            name: "y"
+            scale: linear
+            suffix: ' GiB'
+        colors:
+          - hex: '#8F8AF4'
+            id: 8efe7369-4ec4-4c22-87e1-b063fb47d4ae
+            name: Do Androids Dream of Electric Sheep?
+            type: scale
+          - hex: '#A51414'
+            id: bf957e2b-5fc4-4f01-81f3-2481ceaec64b
+            name: Do Androids Dream of Electric Sheep?
+            type: scale
+          - hex: '#F4CF31'
+            id: 9076bfcd-34b8-46d4-b3bb-fdbf272c273d
+            name: Do Androids Dream of Electric Sheep?
+            type: scale
+        geom: monotoneX
+        height: 2
+        hoverDimension: "y"
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        name: Folder Snap Usage (Compressed)
+        note: "**Compressed Usage**\r\n\r\nShows you the compressed data in the Volume"
+        noteOnEmpty: true
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "gotham-bucket")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "folderDetail")
+                  |> filter(fn: (r) => r["array"] == v.ArrayName)
+                  |> filter(fn: (r) => r["_field"] == "snap_usage_compressed_GiB")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        shade: true
+        width: 4
+        xCol: _time
+        xPos: 8
+        yCol: _value
+        yPos: 1
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: Compressed Usage (GiB)
+            name: "y"
+            scale: linear
+            suffix: ' GiB'
+        colors:
+          - hex: '#FD7A5D'
+            id: 3af01719-f6dd-4c61-9998-0d92fc8eaba7
+            name: Delorean
+            type: scale
+          - hex: '#5F1CF2'
+            id: f825f2a0-1a21-4afb-9601-286b389477c8
+            name: Delorean
+            type: scale
+          - hex: '#4CE09A'
+            id: 726dc66e-23cf-4f3e-83b7-11bb0aa9aea0
+            name: Delorean
+            type: scale
+        geom: monotoneX
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        name: Volume Usage (Compressed)
+        note: "**Compressed Usage**\r\n\r\nShows you the compressed data in the Volume"
+        noteOnEmpty: true
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "gotham-bucket")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "volDetail")
+                  |> filter(fn: (r) => r["array"] == v.ArrayName)
+                  |> filter(fn: (r) => r["_field"] == "vol_usage_compressed_GiB")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        width: 4
+        xCol: _time
+        xPos: 8
+        yCol: _value
+        yPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: Compressed Usage (GiB)
+            name: "y"
+            scale: linear
+            suffix: ' GiB'
+        colors:
+          - hex: '#DA6FF1'
+            id: 519f337d-ff93-49e4-b54b-25a654312965
+            name: Ectoplasm
+            type: scale
+          - hex: '#00717A'
+            id: 783552a6-f087-4636-b222-4aff786cddb1
+            name: Ectoplasm
+            type: scale
+          - hex: '#ACFF76'
+            id: 483ea86c-c36d-47e5-813d-26558ba0f81e
+            name: Ectoplasm
+            type: scale
+        geom: monotoneX
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        name: 'Snap Usage (Compressed) '
+        note: "**Compressed Usage**\r\n\r\nShows you the compressed data in the Volume's
+            Snap"
+        noteOnEmpty: true
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "gotham-bucket")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "volDetail")
+                  |> filter(fn: (r) => r["array"] == v.ArrayName)
+                  |> filter(fn: (r) => r["_field"] == "snap_usage_compressed_GiB")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        width: 4
+        xCol: _time
+        xPos: 8
+        yCol: _value
+        yPos: 8
+    description: Nimble Historical Capacity Graph (10MB/Volume/Day)
+    name: Nimble Capacity Graph
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: mystifying-spence-552001
+spec:
+    associations:
+      - kind: Label
+        name: bettering-chebyshev-552007
+      - kind: Label
+        name: stupefied-elgamal-552003
+    charts:
+      - height: 3
+        kind: Markdown
+        name: Name this Cell
+        note: "![# HPE Nimble Storage](https://nimble-af20.gotham.hpe.lab/nmbl-components/images/oem/OEM_HPE_logo_sm.png)\r\n####
+            Volume Capacity Stacked\r\n\r\nVolume's Data and Snapshot Size, also group
+            with folder. This dashboard will stack to show overall capacity."
+        width: 4
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '#### Volume''s Data Stacked Capacity'
+        width: 12
+        yPos: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: Compression Ratio
+            name: "y"
+            scale: linear
+            suffix: x
+        colors:
+          - hex: '#FD7A5D'
+            id: 3af01719-f6dd-4c61-9998-0d92fc8eaba7
+            name: Delorean
+            type: scale
+          - hex: '#5F1CF2'
+            id: f825f2a0-1a21-4afb-9601-286b389477c8
+            name: Delorean
+            type: scale
+          - hex: '#4CE09A'
+            id: 726dc66e-23cf-4f3e-83b7-11bb0aa9aea0
+            name: Delorean
+            type: scale
+        geom: monotoneX
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        name: Volume Historical Compression Ratio
+        note: "**Historical Compress Ratio**\r\n\r\nShows you the real Compression
+            Ratio of each volume. Dedupe not included"
+        noteOnEmpty: true
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "gotham-bucket")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "volDetail")
+                  |> filter(fn: (r) => r["array"] == v.ArrayName)
+                  |> filter(fn: (r) => r["_field"] == "vol_usage_uncompressed_GiB" or r["_field"] == "vol_usage_compressed_GiB")
+                  |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")
+                  |> map(fn: (r) => ({ r with _value: (r.vol_usage_uncompressed_GiB+0.01) / (r.vol_usage_compressed_GiB+0.01) }))
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        width: 4
+        xCol: _time
+        yCol: _value
+        yPos: 4
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '#### Volume''s Snapshots Stacked Capacity'
+        width: 12
+        yPos: 7
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: Compression Ratio
+            name: "y"
+            scale: linear
+            suffix: x
+        colors:
+          - hex: '#FDC44F'
+            id: 8320fee6-0320-4ede-82e1-bb61e1a7e974
+            name: Cthulhu
+            type: scale
+          - hex: '#007C76'
+            id: 2ab84974-efdf-4cda-adf9-3c320ded5dda
+            name: Cthulhu
+            type: scale
+          - hex: '#8983FF'
+            id: 206537e9-f027-417d-8ff0-6758b619db23
+            name: Cthulhu
+            type: scale
+        geom: monotoneX
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        name: 'Snap Historical Compression Ratio '
+        note: "**Historical Compress Ratio**\r\n\r\nShows you the real Compression
+            Ratio of each volume. Dedupe not included"
+        noteOnEmpty: true
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "gotham-bucket")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "volDetail")
+                  |> filter(fn: (r) => r["array"] == v.ArrayName)
+                  |> filter(fn: (r) => r["_field"] == "snap_usage_uncompressed_GiB" or r["_field"] == "snap_usage_compressed_GiB")
+                  |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")
+                  |> map(fn: (r) => ({ r with _value: (r.snap_usage_uncompressed_GiB+0.01) / (r.snap_usage_compressed_GiB+0.01) }))
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        width: 4
+        xCol: _time
+        yCol: _value
+        yPos: 8
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '#### Folder Stacked Compressed Capacity'
+        width: 8
+        xPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: Compressed Usage (GiB)
+            name: "y"
+            scale: linear
+            suffix: ' GiB'
+        colors:
+          - hex: '#8F8AF4'
+            id: 8efe7369-4ec4-4c22-87e1-b063fb47d4ae
+            name: Do Androids Dream of Electric Sheep?
+            type: scale
+          - hex: '#A51414'
+            id: bf957e2b-5fc4-4f01-81f3-2481ceaec64b
+            name: Do Androids Dream of Electric Sheep?
+            type: scale
+          - hex: '#F4CF31'
+            id: 9076bfcd-34b8-46d4-b3bb-fdbf272c273d
+            name: Do Androids Dream of Electric Sheep?
+            type: scale
+        geom: monotoneX
+        height: 2
+        hoverDimension: "y"
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        name: Stacked Folder Usage (Compressed)
+        note: "**Compressed Usage**\r\n\r\nShows you the compressed data in the Volume"
+        noteOnEmpty: true
+        position: stacked
+        queries:
+          - query: |-
+                from(bucket: "gotham-bucket")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "folderDetail")
+                  |> filter(fn: (r) => r["array"] == v.ArrayName)
+                  |> filter(fn: (r) => r["_field"] == "vol_usage_compressed_GiB")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        shade: true
+        width: 4
+        xCol: _time
+        xPos: 4
+        yCol: _value
+        yPos: 1
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: UnCompressed Usage (GiB)
+            name: "y"
+            scale: linear
+            suffix: ' GiB'
+        colors:
+          - hex: '#FD7A5D'
+            id: 3af01719-f6dd-4c61-9998-0d92fc8eaba7
+            name: Delorean
+            type: scale
+          - hex: '#5F1CF2'
+            id: f825f2a0-1a21-4afb-9601-286b389477c8
+            name: Delorean
+            type: scale
+          - hex: '#4CE09A'
+            id: 726dc66e-23cf-4f3e-83b7-11bb0aa9aea0
+            name: Delorean
+            type: scale
+        geom: monotoneX
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        name: Stacked Volume Usage (UnCompressed)
+        note: "**Uncompressed Usage**\r\n\r\nShows you the real logical data in the
+            Volume"
+        noteOnEmpty: true
+        position: stacked
+        queries:
+          - query: |-
+                from(bucket: "gotham-bucket")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "volDetail")
+                  |> filter(fn: (r) => r["array"] == v.ArrayName)
+                  |> filter(fn: (r) => r["_field"] == "vol_usage_uncompressed_GiB")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        width: 4
+        xCol: _time
+        xPos: 4
+        yCol: _value
+        yPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: UnCompressed Usage (GiB)
+            name: "y"
+            scale: linear
+            suffix: ' GiB'
+        colors:
+          - hex: '#FDC44F'
+            id: 8320fee6-0320-4ede-82e1-bb61e1a7e974
+            name: Cthulhu
+            type: scale
+          - hex: '#007C76'
+            id: 2ab84974-efdf-4cda-adf9-3c320ded5dda
+            name: Cthulhu
+            type: scale
+          - hex: '#8983FF'
+            id: 206537e9-f027-417d-8ff0-6758b619db23
+            name: Cthulhu
+            type: scale
+        geom: monotoneX
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        name: Stacked Snap Usage (UnCompressed)
+        note: "**Uncompressed Usage**\r\n\r\nShows you the real logical data in the
+            Volume"
+        noteOnEmpty: true
+        position: stacked
+        queries:
+          - query: |-
+                from(bucket: "gotham-bucket")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "volDetail")
+                  |> filter(fn: (r) => r["array"] == v.ArrayName)
+                  |> filter(fn: (r) => r["_field"] == "snap_usage_uncompressed_GiB")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        width: 4
+        xCol: _time
+        xPos: 4
+        yCol: _value
+        yPos: 8
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: Compressed Usage (GiB)
+            name: "y"
+            scale: linear
+            suffix: ' GiB'
+        colors:
+          - hex: '#8F8AF4'
+            id: 8efe7369-4ec4-4c22-87e1-b063fb47d4ae
+            name: Do Androids Dream of Electric Sheep?
+            type: scale
+          - hex: '#A51414'
+            id: bf957e2b-5fc4-4f01-81f3-2481ceaec64b
+            name: Do Androids Dream of Electric Sheep?
+            type: scale
+          - hex: '#F4CF31'
+            id: 9076bfcd-34b8-46d4-b3bb-fdbf272c273d
+            name: Do Androids Dream of Electric Sheep?
+            type: scale
+        geom: monotoneX
+        height: 2
+        hoverDimension: "y"
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        name: Stacked Folder Snap Usage (Compressed)
+        note: "**Compressed Usage**\r\n\r\nShows you the compressed data in the Volume"
+        noteOnEmpty: true
+        position: stacked
+        queries:
+          - query: |-
+                from(bucket: "gotham-bucket")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "folderDetail")
+                  |> filter(fn: (r) => r["array"] == v.ArrayName)
+                  |> filter(fn: (r) => r["_field"] == "snap_usage_compressed_GiB")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        shade: true
+        width: 4
+        xCol: _time
+        xPos: 8
+        yCol: _value
+        yPos: 1
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: Compressed Usage (GiB)
+            name: "y"
+            scale: linear
+            suffix: ' GiB'
+        colors:
+          - hex: '#FD7A5D'
+            id: 3af01719-f6dd-4c61-9998-0d92fc8eaba7
+            name: Delorean
+            type: scale
+          - hex: '#5F1CF2'
+            id: f825f2a0-1a21-4afb-9601-286b389477c8
+            name: Delorean
+            type: scale
+          - hex: '#4CE09A'
+            id: 726dc66e-23cf-4f3e-83b7-11bb0aa9aea0
+            name: Delorean
+            type: scale
+        geom: monotoneX
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        name: Stacked Volume Usage (Compressed)
+        note: "**Compressed Usage**\r\n\r\nShows you the compressed data in the Volume"
+        noteOnEmpty: true
+        position: stacked
+        queries:
+          - query: |-
+                from(bucket: "gotham-bucket")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "volDetail")
+                  |> filter(fn: (r) => r["array"] == v.ArrayName)
+                  |> filter(fn: (r) => r["_field"] == "vol_usage_compressed_GiB")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        width: 4
+        xCol: _time
+        xPos: 8
+        yCol: _value
+        yPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: Compressed Usage (GiB)
+            name: "y"
+            scale: linear
+            suffix: ' GiB'
+        colors:
+          - hex: '#DA6FF1'
+            id: 519f337d-ff93-49e4-b54b-25a654312965
+            name: Ectoplasm
+            type: scale
+          - hex: '#00717A'
+            id: 783552a6-f087-4636-b222-4aff786cddb1
+            name: Ectoplasm
+            type: scale
+          - hex: '#ACFF76'
+            id: 483ea86c-c36d-47e5-813d-26558ba0f81e
+            name: Ectoplasm
+            type: scale
+        geom: monotoneX
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        name: 'Stacked Snap Usage (Compressed) '
+        note: "**Compressed Usage**\r\n\r\nShows you the compressed data in the Volume's
+            Snap"
+        noteOnEmpty: true
+        position: stacked
+        queries:
+          - query: |-
+                from(bucket: "gotham-bucket")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "volDetail")
+                  |> filter(fn: (r) => r["array"] == v.ArrayName)
+                  |> filter(fn: (r) => r["_field"] == "snap_usage_compressed_GiB")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        width: 4
+        xCol: _time
+        xPos: 8
+        yCol: _value
+        yPos: 8
+    description: Nimble Historical Stacked Capacity Graph
+    name: Nimble Stacked Capacity Graph
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: rainy-hofstadter-952001
+spec:
+    associations:
+      - kind: Label
+        name: stupefied-elgamal-552003
+    charts:
+      - height: 2
+        kind: Markdown
+        name: Name this Cell
+        note: "![# HPE Nimble Storage](https://nimble-af20.gotham.hpe.lab/nmbl-components/images/oem/OEM_HPE_logo_sm.png)\r\n####
+            Volume Capacity Utilization\r\n\r\nVolume's Data and Snapshot Size comparison
+            and shows how much the host see the Utilization."
+        width: 12
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - label: Snap + Vol Capacity
+            name: "y"
+            scale: linear
+            suffix: ' GiB'
+        colors:
+          - hex: '#31C0F6'
+            id: 9179d260-72d2-4a81-bb97-1e8505490344
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: ca4aefbe-50ae-498e-8505-50a5abcad483
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: c42adb2e-e7f9-41d6-acf1-0ec01e256c93
+            name: Nineteen Eighty Four
+            type: scale
+        geom: monotoneX
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        name: 'Snapshot vs Volume Capacity '
+        position: stacked
+        queries:
+          - query: |-
+                from(bucket: "gotham-bucket")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "volDetail")
+                  |> filter(fn: (r) => r["array"] == v.ArrayName)
+                  |> filter(fn: (r) => r["_field"] == "snap_usage_compressed_GiB" or r["_field"] == "vol_usage_compressed_GiB")
+                  |> group(columns: ["_field"])
+                  |> aggregateWindow(every: v.windowPeriod, fn: sum, createEmpty: false)
+                  |> yield(name: "sum")
+        shade: true
+        width: 4
+        xCol: _time
+        yCol: _value
+        yPos: 2
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: LUN Utilization (%)
+            name: "y"
+            scale: linear
+            suffix: ' % '
+        colors:
+          - hex: '#DA6FF1'
+            id: f1928fda-fe85-4375-a8fd-fcdcd4094f9e
+            name: Ectoplasm
+            type: scale
+          - hex: '#00717A'
+            id: 0fead266-0119-4fe3-bfad-e907573d8fd8
+            name: Ectoplasm
+            type: scale
+          - hex: '#ACFF76'
+            id: b42defe7-c473-4b3c-832f-39d310833e70
+            name: Ectoplasm
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        name: LUN Utilization (%)
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "gotham-bucket")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "volDetail")
+                  |> filter(fn: (r) => r["array"] == v.ArrayName)
+                  |> filter(fn: (r) => r["_field"] == "vol_usage_uncompressed_GiB" or r["_field"] == "size_GiB")
+                  |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")
+                  |> map(fn: (r) => ({ r with _value: (r.vol_usage_uncompressed_GiB) / (r.size_GiB) *100.0 }))
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        width: 4
+        xCol: _time
+        xPos: 4
+        yCol: _value
+        yPos: 2
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: Snapshot (%)
+            name: "y"
+            scale: linear
+            suffix: ' (%)'
+        colors:
+          - hex: '#31C0F6'
+            id: 9179d260-72d2-4a81-bb97-1e8505490344
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: ca4aefbe-50ae-498e-8505-50a5abcad483
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: c42adb2e-e7f9-41d6-acf1-0ec01e256c93
+            name: Nineteen Eighty Four
+            type: scale
+        geom: monotoneX
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        name: Snashots vs Volume Capacity (%)
+        position: overlaid
+        queries:
+          - query: "from(bucket: \"gotham-bucket\")\r\n  |> range(start: v.timeRangeStart,
+                stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"]
+                == \"volDetail\")\r\n  |> filter(fn: (r) => r[\"array\"] == v.ArrayName)\r\n
+                \ |> filter(fn: (r) => r[\"_field\"] == \"snap_usage_compressed_GiB\"
+                or r[\"_field\"] == \"vol_usage_compressed_GiB\")\r\n  |> pivot(rowKey:[\"_time\"],
+                columnKey: [\"_field\"], valueColumn: \"_value\")\r\n  |> map(fn:
+                (r) => ({ r with _value: ((r.snap_usage_compressed_GiB)+0.001) / (r.vol_usage_compressed_GiB+0.001)
+                *100.0 }))\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last,
+                createEmpty: false)\r\n  |> yield(name: \"last\")"
+        width: 4
+        xCol: _time
+        xPos: 8
+        yCol: _value
+        yPos: 2
+    description: Nimble historical volume and snapshot utilization
+    name: Volume Capacity Usage
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: thirsty-lovelace-552001
+spec:
+    associations:
+      - kind: Label
+        name: stupefied-elgamal-552003
+    charts:
+      - height: 3
+        kind: Markdown
+        name: Name this Cell
+        note: "![# HPE Nimble Storage](https://nimble-af20.gotham.hpe.lab/nmbl-components/images/oem/OEM_HPE_logo_sm.png)\r\n####
+            Data Changes Information\r\n\r\nVolume's Data and Snapshot Changes, also
+            group with folder. This dashboard will show overall capacity comparison
+            of each volume and folder."
+        width: 4
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '#### Volume''s Data Changes'
+        width: 6
+        yPos: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: Data Changes(GiB)
+            name: "y"
+            scale: linear
+            suffix: ' GiB'
+        colors:
+          - hex: '#FD7A5D'
+            id: 3af01719-f6dd-4c61-9998-0d92fc8eaba7
+            name: Delorean
+            type: scale
+          - hex: '#5F1CF2'
+            id: f825f2a0-1a21-4afb-9601-286b389477c8
+            name: Delorean
+            type: scale
+          - hex: '#4CE09A'
+            id: 726dc66e-23cf-4f3e-83b7-11bb0aa9aea0
+            name: Delorean
+            type: scale
+        generateYAxisTicks:
+          - yTickStart
+          - yTickStep
+        geom: monotoneX
+        height: 2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        name: Volume Data Changes (UnCompressed)
+        note: "**Uncompressed Usage**\r\n\r\nShows you the real logical data in the
+            Volume"
+        noteOnEmpty: true
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "gotham-bucket")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "volDetail")
+                  |> filter(fn: (r) => r["_field"] == "vol_usage_uncompressed_GiB")
+                  |> filter(fn: (r) => r["array"] == v.ArrayName)
+                  |> derivative(unit: 1s, nonNegative: false)
+                  |> yield(name: "derivative")
+        width: 6
+        xCol: _time
+        yCol: _value
+        yPos: 4
+        yTickStep: 0.1
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: Data Changes(GiB)
+            name: "y"
+            scale: linear
+            suffix: ' GiB'
+        colors:
+          - hex: '#FD7A5D'
+            id: 3af01719-f6dd-4c61-9998-0d92fc8eaba7
+            name: Delorean
+            type: scale
+          - hex: '#5F1CF2'
+            id: f825f2a0-1a21-4afb-9601-286b389477c8
+            name: Delorean
+            type: scale
+          - hex: '#4CE09A'
+            id: 726dc66e-23cf-4f3e-83b7-11bb0aa9aea0
+            name: Delorean
+            type: scale
+        geom: monotoneX
+        height: 2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        name: Volume Data Changes (Compressed)
+        note: "**Uncompressed Usage**\r\n\r\nShows you the real logical data in the
+            Volume"
+        noteOnEmpty: true
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "gotham-bucket")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "volDetail")
+                  |> filter(fn: (r) => r["_field"] == "vol_usage_compressed_GiB")
+                  |> filter(fn: (r) => r["array"] == v.ArrayName)
+                  |> derivative(unit: 1s, nonNegative: false)
+                  |> yield(name: "derivative")
+        width: 6
+        xCol: _time
+        yCol: _value
+        yPos: 6
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '#### Folder Compressed Data Changes'
+        width: 8
+        xPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: Compressed Changes(GiB)
+            name: "y"
+            scale: linear
+            suffix: ' GiB'
+        colors:
+          - hex: '#8F8AF4'
+            id: 8efe7369-4ec4-4c22-87e1-b063fb47d4ae
+            name: Do Androids Dream of Electric Sheep?
+            type: scale
+          - hex: '#A51414'
+            id: bf957e2b-5fc4-4f01-81f3-2481ceaec64b
+            name: Do Androids Dream of Electric Sheep?
+            type: scale
+          - hex: '#F4CF31'
+            id: 9076bfcd-34b8-46d4-b3bb-fdbf272c273d
+            name: Do Androids Dream of Electric Sheep?
+            type: scale
+        geom: monotoneX
+        height: 2
+        hoverDimension: "y"
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        name: Folder Data Changes(Compressed)
+        note: "**Compressed Usage**\r\n\r\nShows you the compressed data in the Volume"
+        noteOnEmpty: true
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "gotham-bucket")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "folderDetail")
+                  |> filter(fn: (r) => r["_field"] == "vol_usage_compressed_GiB")
+                  |> filter(fn: (r) => r["array"] == v.ArrayName)
+                  |> derivative(unit: 1s, nonNegative: false)
+                  |> yield(name: "derivative")
+        width: 4
+        xCol: _time
+        xPos: 4
+        yCol: _value
+        yPos: 1
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '#### Volume''s Snapshots Data Changes'
+        width: 6
+        xPos: 6
+        yPos: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: Data Changes(GiB)
+            name: "y"
+            scale: linear
+            suffix: ' GiB'
+        colors:
+          - hex: '#FD7A5D'
+            id: 3af01719-f6dd-4c61-9998-0d92fc8eaba7
+            name: Delorean
+            type: scale
+          - hex: '#5F1CF2'
+            id: f825f2a0-1a21-4afb-9601-286b389477c8
+            name: Delorean
+            type: scale
+          - hex: '#4CE09A'
+            id: 726dc66e-23cf-4f3e-83b7-11bb0aa9aea0
+            name: Delorean
+            type: scale
+        generateYAxisTicks:
+          - yTickStart
+          - yTickStep
+        geom: monotoneX
+        height: 2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        name: 'Snapshot Data Changes (UnCompressed) '
+        note: "**Uncompressed Usage**\r\n\r\nShows you the real logical data in the
+            Volume"
+        noteOnEmpty: true
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "gotham-bucket")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "volDetail")
+                  |> filter(fn: (r) => r["_field"] == "snap_usage_uncompressed_GiB")
+                  |> filter(fn: (r) => r["array"] == v.ArrayName)
+                  |> derivative(unit: 1s, nonNegative: false)
+                  |> yield(name: "derivative")
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 4
+        yTickStep: 0.1
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: Data Changes(GiB)
+            name: "y"
+            scale: linear
+            suffix: ' GiB'
+        colors:
+          - hex: '#FD7A5D'
+            id: 3af01719-f6dd-4c61-9998-0d92fc8eaba7
+            name: Delorean
+            type: scale
+          - hex: '#5F1CF2'
+            id: f825f2a0-1a21-4afb-9601-286b389477c8
+            name: Delorean
+            type: scale
+          - hex: '#4CE09A'
+            id: 726dc66e-23cf-4f3e-83b7-11bb0aa9aea0
+            name: Delorean
+            type: scale
+        geom: monotoneX
+        height: 2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        name: 'Snapshot Data Changes (Compressed) '
+        note: "**Uncompressed Usage**\r\n\r\nShows you the real logical data in the
+            Volume"
+        noteOnEmpty: true
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "gotham-bucket")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "volDetail")
+                  |> filter(fn: (r) => r["_field"] == "snap_usage_compressed_GiB")
+                  |> filter(fn: (r) => r["array"] == v.ArrayName)
+                  |> derivative(unit: 1s, nonNegative: false)
+                  |> yield(name: "derivative")
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 6
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: Compressed Changes(GiB)
+            name: "y"
+            scale: linear
+            suffix: ' GiB'
+        colors:
+          - hex: '#8F8AF4'
+            id: 8efe7369-4ec4-4c22-87e1-b063fb47d4ae
+            name: Do Androids Dream of Electric Sheep?
+            type: scale
+          - hex: '#A51414'
+            id: bf957e2b-5fc4-4f01-81f3-2481ceaec64b
+            name: Do Androids Dream of Electric Sheep?
+            type: scale
+          - hex: '#F4CF31'
+            id: 9076bfcd-34b8-46d4-b3bb-fdbf272c273d
+            name: Do Androids Dream of Electric Sheep?
+            type: scale
+        geom: monotoneX
+        height: 2
+        hoverDimension: "y"
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        name: Folder Snap Usage (Compressed)
+        note: "**Compressed Usage**\r\n\r\nShows you the compressed data in the Volume"
+        noteOnEmpty: true
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "gotham-bucket")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "folderDetail")
+                  |> filter(fn: (r) => r["_field"] == "snap_usage_compressed_GiB")
+                  |> filter(fn: (r) => r["array"] == v.ArrayName)
+                  |> derivative(unit: 1s, nonNegative: false)
+                  |> yield(name: "derivative")
+        width: 4
+        xCol: _time
+        xPos: 8
+        yCol: _value
+        yPos: 1
+    description: Nimble Historical Capacity Graph
+    name: Nimble Data Changes
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: unbridled-newton-d52001
+spec:
+    associations:
+      - kind: Label
+        name: charming-jang-552001
+      - kind: Label
+        name: spectacular-jones-552005
+    charts:
+      - height: 2
+        kind: Markdown
+        name: Name this Cell
+        note: '![alt text](https://nimble-af20.gotham.hpe.lab/nmbl-components/images/oem/OEM_HPE_logo_lg.png)'
+        width: 3
+      - axes:
+          - label: Block Size (KB)
+            name: x
+        binCount: 64
+        colors:
+          - hex: '#34BB55'
+            id: 5240bde4-7820-45b3-9c6a-4ef56449aed5
+            name: Solid Green
+            type: scale
+          - hex: '#34BB55'
+            id: 11dff8a4-7bc8-4d11-a2e6-0f8248738194
+            name: Solid Green
+            type: scale
+          - hex: '#34BB55'
+            id: 486b4626-9562-4e4b-93a7-77620ddcd232
+            name: Solid Green
+            type: scale
+        fillColumns:
+          - _measurement
+        height: 2
+        kind: Histogram
+        legendColorizeRows: true
+        legendOpacity: 1
+        name: Nimble Volume's Read Block Size Histogram
+        position: stacked
+        queries:
+          - query: |-
+                from(bucket: "gotham-bucket")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "volDetail")
+                  |> filter(fn: (r) => r["array"] == v.ArrayName)
+                  |> filter(fn: (r) => r["_field"] == "read_size")
+                  |> filter(fn: (r) => r._value > 0 )
+                  |> map(fn: (r) => ({ r with _value: r._value / 1000.0 }))
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        width: 3
+        xCol: _value
+        yPos: 2
+      - axes:
+          - label: Latency (ms)
+            name: x
+        binCount: 64
+        colors:
+          - hex: '#00A3FF'
+            id: 4de449e2-c62b-4fcb-beb9-3ceb872ed408
+            name: Solid Blue
+            type: scale
+          - hex: '#00A3FF'
+            id: bc7523b3-cbc5-430c-a573-434149ddbfd2
+            name: Solid Blue
+            type: scale
+          - hex: '#00A3FF'
+            id: 0f3b6e0b-13db-463b-becb-f0f69c36688d
+            name: Solid Blue
+            type: scale
+        fillColumns:
+          - _field
+        height: 2
+        kind: Histogram
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Nimble Read Latency Histogram
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "gotham-bucket")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "volDetail")
+                  |> filter(fn: (r) => r["_field"] == "read_latency")
+                  |> filter(fn: (r) => r["array"] == v.ArrayName)
+                  |> filter(fn: (r) => r._value > 0 )
+
+                  |> map(fn: (r) => ({ r with _value: r._value / 1000.0 }))
+
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        width: 3
+        xCol: _value
+        yPos: 4
+      - height: 2
+        kind: Markdown
+        name: Name this Cell
+        note: "#### Nimble Performance Analytics\r\n\r\nShow latency and block size
+            historgram, and blocksize heat map over time. (Based on 5 mins average
+            from Nimble Rest API)"
+        width: 3
+        xPos: 3
+      - axes:
+          - label: Block Size (KB)
+            name: x
+        binCount: 64
+        colors:
+          - hex: '#FFD255'
+            id: 76b0cb7b-4bdd-4062-9ffb-ec46c53f7dea
+            name: Solid Yellow
+            type: scale
+          - hex: '#FFD255'
+            id: 00c92c6a-f0b3-4199-ae26-afa55b3fc79d
+            name: Solid Yellow
+            type: scale
+          - hex: '#FFD255'
+            id: 6abb0e8d-cd76-46ea-b547-056c3556e681
+            name: Solid Yellow
+            type: scale
+        fillColumns:
+          - _measurement
+        height: 2
+        kind: Histogram
+        legendColorizeRows: true
+        legendOpacity: 1
+        name: Nimble Volume's Write Block Size Histogram
+        position: stacked
+        queries:
+          - query: |-
+                from(bucket: "gotham-bucket")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "volDetail")
+                  |> filter(fn: (r) => r["array"] == v.ArrayName)
+                  |> filter(fn: (r) => r["_field"] == "write_size")
+                  |> filter(fn: (r) => r._value > 0 )
+
+                  |> map(fn: (r) => ({ r with _value: r._value / 1000.0 }))
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        width: 3
+        xCol: _value
+        xPos: 3
+        yPos: 2
+      - axes:
+          - label: Latency (ms)
+            name: x
+        binCount: 64
+        colors:
+          - hex: '#BE2EE4'
+            id: 4a93d115-f5c2-475c-bffa-ec2bc44e64c4
+            name: Solid Purple
+            type: scale
+          - hex: '#BE2EE4'
+            id: 75b6f46e-953c-4653-8fcf-4792238eb372
+            name: Solid Purple
+            type: scale
+          - hex: '#BE2EE4'
+            id: f4b22016-ee98-47de-af34-999a82389140
+            name: Solid Purple
+            type: scale
+        fillColumns:
+          - _field
+        height: 2
+        kind: Histogram
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Nimble Write Latency Histogram
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "gotham-bucket")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "volDetail")
+                  |> filter(fn: (r) => r["_field"] == "write_latency")
+                  |> filter(fn: (r) => r._value > 0 )
+                  |> filter(fn: (r) => r["array"] == v.ArrayName)
+
+                  |> map(fn: (r) => ({ r with _value: r._value / 1000.0 }))
+
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        width: 3
+        xCol: _value
+        xPos: 3
+        yPos: 4
+      - axes:
+          - name: x
+          - label: Read BLockSize (KB)
+            name: "y"
+        binSize: 10
+        colors:
+          - hex: '#000004'
+          - hex: '#110a30'
+          - hex: '#320a5e'
+          - hex: '#57106e'
+          - hex: '#781c6d'
+          - hex: '#9a2865'
+          - hex: '#bc3754'
+          - hex: '#d84c3e'
+          - hex: '#ed6925'
+          - hex: '#f98e09'
+          - hex: '#fbb61a'
+          - hex: '#f4df53'
+        height: 3
+        kind: Heatmap
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Nimble Volume's Read Size HeatMap
+        queries:
+          - query: |-
+                from(bucket: "gotham-bucket")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "volDetail")
+                  |> filter(fn: (r) => r["array"] == v.ArrayName)
+                  |> filter(fn: (r) => r["_field"] == "read_size")
+                  |> filter(fn: (r) => r._value > 0 )
+
+                  |> map(fn: (r) => ({ r with _value: r._value / 1000.0 }))
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+      - axes:
+          - name: x
+          - label: Write BlockSize (KB)
+            name: "y"
+        binSize: 10
+        colors:
+          - hex: '#000004'
+          - hex: '#110a30'
+          - hex: '#320a5e'
+          - hex: '#57106e'
+          - hex: '#781c6d'
+          - hex: '#9a2865'
+          - hex: '#bc3754'
+          - hex: '#d84c3e'
+          - hex: '#ed6925'
+          - hex: '#f98e09'
+          - hex: '#fbb61a'
+          - hex: '#f4df53'
+        height: 3
+        kind: Heatmap
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Nimble Volume's Write BlockSize HeatMap
+        queries:
+          - query: |-
+                from(bucket: "gotham-bucket")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "volDetail")
+                  |> filter(fn: (r) => r["array"] == v.ArrayName)
+                  |> filter(fn: (r) => r["_field"] == "write_size")
+                  |> filter(fn: (r) => r._value > 0 )
+
+                  |> map(fn: (r) => ({ r with _value: r._value / 1000.0 }))
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 3
+    description: Quick analysis of latency and IO Size
+    name: Nimble Performance Analytics
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: youthful-kowalevski-552001
+spec:
+    charts:
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '#### This Dashboard gives you an overview of some of the metrics that
+            are available from the Local Metrics endpoint located at `/metrics`. Check
+            out our [documentation page for configuring Scrapers](https://v2.docs.influxdata.com/v2.0/collect-data/scrape-data/manage-scrapers/create-a-scraper/)
+            if you don''t see any data below.'
+        width: 12
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat
+        name: Uptime
+        note: This shows the amount of time your current InfluxDB 2 instance has been
+            running, in hours. Keep it up!
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "influxdb_uptime_seconds")
+                  |> filter(fn: (r) => r._field == "gauge")
+                  |> last()
+                  |> map(fn: (r) => ({r with _value: float(v: r._value) / 60.0 / 60.0}))
+        suffix: ' hrs'
+        width: 3
+        yPos: 1
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: ""
+        note: An Organization is a workspace where you and your team can organize
+            your data, Dashboards, Tasks, and anything else you create. You can quickly
+            switch between or create a new one from the first icon in the navigation
+            bar. You can read more about Organizations in our [documentation](https://v2.docs.influxdata.com/v2.0/organizations/).
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "influxdb_organizations_total")
+                  |> filter(fn: (r) => r._field == "counter")
+                  |> last()
+        suffix: ' Orgs'
+        width: 3
+        yPos: 3
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: ""
+        note: InfluxDB 2 can create and store your Telegraf agent configs. Telegraf
+            is the world's best data collection agent and is one of the easiest ways
+            to send data into InfluxDB. You can create new configurations in the Settings
+            menu. You can learn more about Telegraf in our [documentation](https://v2.docs.influxdata.com/v2.0/collect-data/use-telegraf/).
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "influxdb_telegrafs_total")
+                  |> filter(fn: (r) => r._field == "counter")
+                  |> last()
+                  |> yield(name: "last")
+        suffix: ' Telegrafs'
+        width: 3
+        yPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        geom: line
+        height: 4
+        kind: Xy
+        name: Local Object Store IO
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "boltdb_reads_total" or r._measurement == "boltdb_writes_total")
+                  |> filter(fn: (r) => r._field == "counter")
+                  |> derivative(unit: v.windowPeriod, nonNegative: true)
+                  |> drop(columns: ["_field"])
+                  |> yield(name: "derivative")
+        width: 12
+        yPos: 5
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        geom: line
+        height: 4
+        kind: Xy
+        name: Query Requests
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "http_api_requests_total")
+                  |> filter(fn: (r) => r.path == "/api/v2/query")
+                  |> filter(fn: (r) => r._field == "counter")
+                  |> derivative(unit: v.windowPeriod, nonNegative: true)
+                  |> yield(name: "derivative")
+        width: 12
+        yPos: 9
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        geom: line
+        height: 3
+        kind: Xy
+        name: Memory Allocations (Bytes)
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "go_memstats_alloc_bytes_total")
+                  |> filter(fn: (r) => r._field == "counter")
+                  |> derivative(unit: v.windowPeriod, nonNegative: true)
+                  |> yield(name: "derivative")
+        width: 4
+        yPos: 13
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        fieldOptions:
+          - visible: true
+          - displayName: result
+            fieldName: result
+            visible: true
+          - displayName: table
+            fieldName: table
+            visible: true
+          - displayName: Architecture
+            fieldName: Architecture
+            visible: true
+          - displayName: Build Date
+            fieldName: Build Date
+            visible: true
+          - displayName: Github Commit
+            fieldName: Github Commit
+            visible: true
+          - displayName: CPUs
+            fieldName: CPUs
+            visible: true
+          - displayName: OS
+            fieldName: OS
+            visible: true
+          - displayName: Version
+            fieldName: Version
+            visible: true
+        height: 2
+        kind: Table
+        name: Instance Info
+        note: This cell gives you information about your running instance of InfluxDB
+            2, but you probably already knew that.
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "influxdb_info")
+                  |> last()
+                  |> drop(columns: ["_start", "_stop","_time","_field","_value","_measurement"])
+                  |> rename(columns: {arch: "Architecture", build_date: "Build Date", commit: "Github Commit", cpus: "CPUs", os: "OS", version: "Version"})
+                  |> yield(name: "last")
+        tableOptions:
+            verticalTimeAxis: true
+        timeFormat: YYYY-MM-DD HH:mm:ss
+        width: 9
+        xPos: 3
+        yPos: 1
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: ""
+        note: This lets you know how many users have access to your InfluxDB 2 instance.
+            You can add new users from the Settings menu. You can learn more about
+            Users in our [documentation](https://v2.docs.influxdata.com/v2.0/users/).
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "influxdb_users_total")
+                  |> filter(fn: (r) => r._field == "counter")
+                  |> last()
+                  |> yield(name: "last")
+        suffix: ' Users'
+        width: 3
+        xPos: 3
+        yPos: 3
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: ""
+        note: Dashboards are a great way to group together and view data in InfluxDB
+            2. You can create new ones from the Dashboards page in the navigation
+            menu. For more information on managing Dashboards, check out our [documentation](https://v2.docs.influxdata.com/v2.0/visualize-data/dashboards/).
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "influxdb_dashboards_total")
+                  |> filter(fn: (r) => r._field == "counter")
+                  |> last()
+                  |> yield(name: "last")
+        suffix: ' Dashboards'
+        width: 3
+        xPos: 3
+        yPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+            suffix: '%'
+        geom: line
+        height: 3
+        kind: Xy
+        name: Memory Usage (%)
+        queries:
+          - query: "bytes_used = from(bucket: v.bucket)\n  |> range(start: v.timeRangeStart,
+                stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"go_memstats_alloc_bytes\")\n
+                \ |> filter(fn: (r) => r._field == \"gauge\")\n  |> drop(columns:
+                [\"_start\", \"_stop\"])\n  \ntotal_bytes = from(bucket: v.bucket)\n
+                \ |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn:
+                (r) => r._measurement == \"go_memstats_sys_bytes\")\n  |> filter(fn:
+                (r) => r._field == \"gauge\")\n  |> drop(columns: [\"_start\", \"_stop\"])\n\njoin(tables:
+                {key1: bytes_used, key2: total_bytes}, on: [\"_time\", \"_field\"],
+                method: \"inner\")\n  |> map(fn: (r) => ({\n    _time: r._time,\n
+                \   _value: (float(v: r._value_key1) / float(v: r._value_key2)) *
+                100.0,\n    _field: \"Memory Usage Percent\"\n  }))\n  |> yield(name:
+                \"percentage\")"
+        width: 4
+        xPos: 4
+        yPos: 13
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: ""
+        note: A Bucket is where you store your time series data and each one has a
+            set retention policy. You created one when you first set your instance
+            up, but you can create new ones from the Settings menu. You can learn
+            more about Buckets in our [documentation](https://v2.docs.influxdata.com/v2.0/organizations/buckets/).
+            Why not create a new one right now?
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "influxdb_buckets_total")
+                  |> filter(fn: (r) => r._field == "counter")
+                  |> last()
+        suffix: ' Buckets'
+        width: 3
+        xPos: 6
+        yPos: 3
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: ""
+        note: InfluxDB 2 can natively scrape data from Prometheus endpoints, including
+            its own metrics. For more information on setting them up, check out our
+            [documentation](https://v2.docs.influxdata.com/v2.0/collect-data/scrape-data/).
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "influxdb_scrapers_total")
+                  |> filter(fn: (r) => r._field == "counter")
+                  |> last()
+                  |> yield(name: "last")
+        suffix: ' Scrapers'
+        width: 3
+        xPos: 6
+        yPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        geom: line
+        height: 3
+        kind: Xy
+        name: Memory Allocs & Frees (Bytes)
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "go_memstats_mallocs_total" or r._measurement == "go_memstats_frees_total")
+                  |> filter(fn: (r) => r._field == "counter")
+                  |> derivative(unit: v.windowPeriod, nonNegative: false)
+                  |> yield(name: "derivative")
+        width: 4
+        xPos: 8
+        yPos: 13
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: ""
+        note: A Token allows you to access your instance from an external client such
+            as a command line or a client library. They are also used to limit the
+            scope of automated actions like Tasks. You can manage them in the Setting
+            menu. You can learn more about Tokens in our [documentation](https://v2.docs.influxdata.com/v2.0/security/tokens/).
+            Keep your Tokens safe!
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "influxdb_tokens_total")
+                  |> filter(fn: (r) => r._field == "counter")
+                  |> last()
+                  |> yield(name: "last")
+        suffix: ' Tokens'
+        width: 3
+        xPos: 9
+        yPos: 3
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: ""
+        note: Tasks allow you to automate Flux queries for things like data rollups
+            and enrichment. You can create a new one from the Tasks button in the
+            navigation menu. For more information about Tasks, check out our [documentation](https://v2.docs.influxdata.com/v2.0/process-data/).
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "task_scheduler_total_runs_active")
+                  |> filter(fn: (r) => r._field == "gauge")
+                  |> last()
+                  |> yield(name: "last")
+        suffix: ' Tasks'
+        width: 3
+        xPos: 9
+        yPos: 4
+    description: A collection of useful visualizations for monitoring your local InfluxDB
+        2.0 OSS instance.
+    name: InfluxDB 2.0 OSS Metrics
