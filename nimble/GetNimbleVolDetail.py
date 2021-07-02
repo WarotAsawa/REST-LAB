@@ -30,31 +30,13 @@ def GetVolFolList(pulledVol):
     result["allVol"][volName]["write_latency"]               = float(volDetail['avg_stats_last_5mins']["write_latency"])
     #All data kept in GiB. Size returned as MiB. Used return as Bytes
     if volFolder in result["allFolder"]:
-      result["allFolder"][volFolder]["vol_usage_uncompressed_GiB"]  += result["allVol"][volName]["vol_usage_uncompressed_GiB"]  
-      result["allFolder"][volFolder]["vol_usage_compressed_GiB"]    += result["allVol"][volName]["vol_usage_compressed_GiB"]    
-      result["allFolder"][volFolder]["snap_usage_uncompressed_GiB"] += result["allVol"][volName]["snap_usage_uncompressed_GiB"] 
-      result["allFolder"][volFolder]["snap_usage_compressed_GiB"]   += result["allVol"][volName]["snap_usage_compressed_GiB"]   
-      result["allFolder"][volFolder]["size_GiB"]                    += result["allVol"][volName]["size_GiB"]                    
-      result["allFolder"][volFolder]["read_iops"]                   += result["allVol"][volName]["read_iops"]                   
-      result["allFolder"][volFolder]["read_throughput"]             += result["allVol"][volName]["read_throughput"]             
-      result["allFolder"][volFolder]["read_latency"]                += result["allVol"][volName]["read_latency"]                
-      result["allFolder"][volFolder]["write_iops"]                  += result["allVol"][volName]["write_iops"]                  
-      result["allFolder"][volFolder]["write_throughput"]            += result["allVol"][volName]["write_throughput"]            
-      result["allFolder"][volFolder]["write_latency"]               += result["allVol"][volName]["write_latency"]               
+      for key in result["allVol"][volName]:
+        result["allFolder"][volFolder][key] += result["allVol"][volName][key]
     else:
       result["allFolder"][volFolder] = {}
-      result["allFolder"][volFolder]["vol_usage_uncompressed_GiB"]  = result["allVol"][volName]["vol_usage_uncompressed_GiB"]  
-      result["allFolder"][volFolder]["vol_usage_compressed_GiB"]    = result["allVol"][volName]["vol_usage_compressed_GiB"]    
-      result["allFolder"][volFolder]["snap_usage_uncompressed_GiB"] = result["allVol"][volName]["snap_usage_uncompressed_GiB"] 
-      result["allFolder"][volFolder]["snap_usage_compressed_GiB"]   = result["allVol"][volName]["snap_usage_compressed_GiB"]   
-      result["allFolder"][volFolder]["size_GiB"]                    = result["allVol"][volName]["size_GiB"]                    
-      result["allFolder"][volFolder]["read_iops"]                   = result["allVol"][volName]["read_iops"]                   
-      result["allFolder"][volFolder]["read_throughput"]             = result["allVol"][volName]["read_throughput"]             
-      result["allFolder"][volFolder]["read_latency"]                = result["allVol"][volName]["read_latency"]                
-      result["allFolder"][volFolder]["write_iops"]                  = result["allVol"][volName]["write_iops"]                  
-      result["allFolder"][volFolder]["write_throughput"]            = result["allVol"][volName]["write_throughput"]            
-      result["allFolder"][volFolder]["write_latency"]               = result["allVol"][volName]["write_latency"]               
-   
+      for key in result["allVol"][volName]:
+        result["allFolder"][volFolder][key] = result["allVol"][volName][key]
+ 
     if result["allVol"][volName]["read_iops"] == 0:
       result["allVol"][volName]["read_size"] = 0.0;
     else:
